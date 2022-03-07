@@ -7,6 +7,7 @@ const { protect } = require("../middleware/authMiddleware");
 
 router.post("/addleads", protect, async (req, res) => {
   try {
+    let user = req.user;
     const {
       PatientName,
       PatientAge,
@@ -20,7 +21,7 @@ router.post("/addleads", protect, async (req, res) => {
 
     const data = new Lead({
       _id: new mongoose.Types.ObjectId(),
-
+      userId: user._id,
       PatientName,
       PatientAge,
       PatientGender,
@@ -30,7 +31,9 @@ router.post("/addleads", protect, async (req, res) => {
       ContactPersonEmailId,
       ContactPersonName,
     });
+
     await data.save();
+
     res.status(201).json({
       message: "Leads added successfully",
       createdLeads: data,

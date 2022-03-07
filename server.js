@@ -1,13 +1,9 @@
 const express = require("express");
 const app = express();
-const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
 const fileUpload = require("express-fileupload");
-const multer = require("multer");
 const morgan = require("morgan");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 
 dotenv.config({ path: "./config.env" });
 require("./conn");
@@ -24,6 +20,7 @@ app.use(morgan("dev"));
 
 app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
+
 app.use(require("./router/auth"));
 app.use(require("./router/org"));
 app.use(require("./router/package"));

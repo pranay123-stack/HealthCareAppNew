@@ -1,54 +1,47 @@
 const express = require("express");
 const router = express.Router();
-const Cart = require("../models/CartSchema");
-
+const Package = require("../models/PackageSchema");
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/user/cart/addtocart", protect, (req, res, next) => {
-  res.json({ message: "user" });
-  // Cart.findOne({ user: req.user._id }).exec((err, cart) => {
-  //   if (err) return res.status(400).json({ err });
-  //   if (cart) {
-  //     const item = cart.cartItems.find(
-  //       (c) => c.package == req.body.cartItems.package
-  //     );
+router.get("/cart", (req, res) => {
+  res.json({ message: "error" });
+});
+router.post("/addcart/:id", protect, (req, res, next) => {
+  let user = req.user;
+  const _id = req.params.id;
+  console.log(_id);
+  Package.findById(_id)
+    .then((package) => {
+      user.addToCart(package);
+    })
+    .catch((err) => console.log(err));
 
-  //     if (item) {
-  //       Cart.findOneAndUpdate(
-  //         { user: req.user._id, "cartItems.product": product },
-  //         {
-  //           $set: {
-  //             cartItems: {
-  //               ...req.body.cartItems,
-  //               quantity: item.quantity + req.body.cartItems.quantity,
-  //             },
-  //           },
-  //         }
-  //       );
-  //     } else {
-  //       Cart.findOneAndUpdate(
-  //         { user: req.user._id },
-  //         {
-  //           $push: {
-  //             cartItems: req.body.cartItems,
-  //           },
-  //         }
-  //       );
-  //     }
-  //   } else {
-  //     const cart = new Cart({
-  //       user: req.user._id,
-  //       cartItems: [req.body.cartItems],
-  //     });
+  res.json("added");
 
-  //     cart.save((error, cart) => {
-  //       if (error) return res.status(400).json({ error });
-  //       if (cart) {
-  //         return res.status(200).json({ cart });
-  //       }
-  //     });
-  //   }
-  // });
+  next();
+});
+
+router.get("/getcart", protect, (req, res) => {
+  let user = req.user;
+  user
+    .populate("cart.items.packageId")
+
+    .then((user) => {
+      console.log(user);
+      res.json({ cart: user.cart });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+router.post("/deletecart", protect, (req, res) => {
+  let user = req.user;
+
+  user
+    .removeFromCart(req.body.packageId)
+    .then(() => res.json({ message: "removed from cart" }))
+    .catch((err) => console.log(err));
 });
 
 module.exports = router;

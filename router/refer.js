@@ -9,45 +9,28 @@ router.get("/home", protect, (req, res) => {
 
 //invite route
 router.post("/invite", (req, res) => {
-  let senderId = req.body.link,
-    // sendermsg = req.body.msg,
-      
-    //   sending patient details
-    var patientdetails= {
-      PatientName = req.body.PatientName,
-      Age = req.body.Age,
-      Gender = req.body.Gender,
-      AttendentName = req.body.AttendentName,
-      MobileNumber = req.body.MobileNumber, 
-        Category = req.body.Category,
-        Hospital = req.body.Hospital,
-        ServiceType = req.body.ServiceType,
-      Description = req.body.Description,
-      
-      
-      
-      }
-     
+  //   sending patient details
+  var patientdetails = {
+    PatientName: req.body.PatientName,
+    Age: req.body.Age,
+    Gender: req.body.Gender,
+    AttendentName: req.body.AttendentName,
+    MobileNumber: req.body.MobileNumber,
+    Category: req.body.Category,
+    Hospital: req.body.Hospital,
+    ServiceType: req.body.ServiceType,
+    Description: req.body.Description,
+  };
 
-      
-      
-      
-      
-      
-      
-      
-      
-    receiverId = req.body.to,
-    newLink = shortid.generate();
-  senderName = req.body.name;
+  (receiverId = req.body.to), (senderName = req.body.name);
   let current = new Date().toISOString();
   client.query(
-    `INSERT INTO invitations (created_at,updated_at, link, senderId,sendermsg,senderName,receiverId) VALUES ('${current}','${current}','${newLink}','${senderId}','${patientdetails}','${senderName}','${receiverId}')`,
+    `INSERT INTO invitations (created_at,updated_at, senderId,patientdetails,senderName,receiverId) VALUES ('${current}','${current}','${senderId}','${patientdetails}','${senderName}','${receiverId}')`,
     (err, result) => {
       if (err) {
         return console.log(err);
       } else {
-        sendEmail(receiverId, senderId, newLink);
+        sendEmail(receiverId, senderId);
         res.send("invited");
       }
     }
@@ -100,4 +83,3 @@ router.get("/invite/:id", (req, res) => {
     }
   );
 });
-

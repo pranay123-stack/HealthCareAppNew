@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Package = require("../models/PackageSchema");
 
 const userSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -22,13 +23,6 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
   },
-
-  leads: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Lead",
-    },
-  ],
 
   type: {
     type: String,
@@ -52,6 +46,30 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+
+  cart: {
+    items: [
+      {
+        packageId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: Package,
+          required: true,
+        },
+
+        packageImage: String,
+        packageName: String,
+        packageOrgName: String,
+        description: String,
+
+        qty: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+
+    totalPrice: Number,
+  },
 });
 
 userSchema.pre("save", async function save(next) {
@@ -71,6 +89,58 @@ userSchema.methods.generateAuthToken = async function () {
     return newtoken;
   } catch (err) {
     console.log(err);
+  }
+};
+
+userSchema.methods.addToCart = function (package) {
+  let cart = this.cart;
+  if (cart.items.length == 0) {
+    cart.items.push({
+      packageId: package._id,
+      qty: 1,
+      packageImage: package.image,
+      packageName: package.PackageName,
+      packageOrgName: package.OrgName,
+      description: package.PackageDescription,
+    });
+    cart.totalPrice = Number(package.ActualPrice);
+  } else {
+    const isExisting = cart.items.findIndex((objInItems) => {
+      return (
+        new String(objInItems.packageId).trim() ===
+        new String(package._id).trim()
+      );
+    });
+    if (isExisting == -1) {
+      cart.items.push({
+        packageId: package._id,
+        qty: 1,
+        packageImage: package.image,
+        packageName: package.PackageName,
+        packageOrgName: package.OrgName,
+        description: package.PackageDescription,
+      });
+      cart.totalPrice += package.ActualPrice;
+    } else {
+      existingPackageInCart = cart.items[isExisting];
+      existingPackageInCart.qty += 1;
+    }
+    cart.totalPrice += package.ActualPrice;
+  }
+
+  return this.save();
+};
+
+userSchema.methods.removeFromCart = function (packageId) {
+  const cart = this.cart;
+  const isExisting = cart.items.findIndex(
+    (objInItems) =>
+      new String(objInItems.packageId).trim() === new String(packageId).trim()
+  );
+
+  if (isExisting >= 0) {
+    cart.items.splice(isExisting, 1);
+    return this.save();
   }
 };
 const User = mongoose.model("User", userSchema);

@@ -13,7 +13,7 @@ cloudinary.config({
   api_secret: "o_CrJsRu7RG-FRyDBbDGj2o7J8I",
 });
 
-router.post("/addorg", protect, (req, res, next) => {
+router.post("/addorg", (req, res, next) => {
   const file = req.files.image;
   cloudinary.uploader
     .upload(file.tempFilePath, (err, result) => {
@@ -55,7 +55,7 @@ router.post("/addorg", protect, (req, res, next) => {
 });
 
 // updating org to attach package
-router.post("/addpackage/:orgid", protect, async (req, res, next) => {
+router.post("/addpackage/:orgid", async (req, res, next) => {
   const file = req.files.image;
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
     // console.log(result);
@@ -81,7 +81,7 @@ router.post("/addpackage/:orgid", protect, async (req, res, next) => {
       .then(function (dbPackage) {
         console.log(dbPackage);
         try {
-          return Org.updateOne(
+          return Organization.updateOne(
             { _id: req.params.orgid },
             { $push: { OrgPackages: dbPackage._id } }
           );
@@ -102,7 +102,7 @@ router.post("/addpackage/:orgid", protect, async (req, res, next) => {
 
 // populating with packages details
 router.get("/getorg/:id", function (req, res) {
-  Org.findById({ _id: req.params.id })
+  Organization.findById({ _id: req.params.id })
     .populate("OrgPackages")
     .then(function (dbOrg) {
       res.json(dbOrg);
