@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Package = require("../models/PackageSchema");
+const Lead = require("../models/LeadsSchema");
 
 const userSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -70,6 +71,62 @@ const userSchema = new mongoose.Schema({
 
     totalPrice: Number,
   },
+
+  Patientrefer: {
+    items: [
+      {
+        referalDetails: {
+          PatientName: String,
+          PatientAge: Number,
+          PatientGender: String,
+          PatientAttendentName: String,
+          PatientMobileNumber: Number,
+          OrganizationCategory: String,
+          HospitalName: String,
+          ServiceType: String,
+          Description: String,
+        },
+      },
+    ],
+  },
+
+  Lead: {
+    items: [
+      {
+        leadId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: Lead,
+          required: true,
+        },
+
+        leadDetails: {
+          PatientName: String,
+          PatientAge: Number,
+          PatientGender: String,
+          HospitalName: String,
+          PackageName: String,
+        },
+      },
+    ],
+  },
+
+  wallet: {
+    walletitems: [
+      {
+        PatientReferWallet: {
+          PatientRefer: Date,
+          PatientName: String,
+        },
+
+        PackageSaleWallet: {
+          PackageSale: Date,
+          PatientName: String,
+        },
+      },
+    ],
+
+    WalletAmount: Number,
+  },
 });
 
 userSchema.pre("save", async function save(next) {
@@ -131,6 +188,37 @@ userSchema.methods.addToCart = function (package) {
   return this.save();
 };
 
+userSchema.methods.addLead = function (leaddata) {
+  let Lead = this.Lead;
+  Lead.items.push({
+    leadId: leaddata._id,
+
+    leadDetails: {
+      PatientName: leaddata.PatientName,
+      PatientAge: leaddata.PatientAge,
+      PatientGender: leaddata.PatientGender,
+      HospitalName: leaddata.HospitalName,
+      PackageName: leaddata.PackageName,
+    },
+  });
+
+  return this.save();
+};
+
+userSchema.methods.addWallet = function (referdata) {
+  let wallet = this.wallet;
+  wallet.walletitems.push({
+    PatientReferWallet: {
+      PatientRefer: "date",
+      PatientName: "referdata.PatientName",
+    },
+
+    walletAmount: 500,
+  });
+
+  return this.save();
+};
+
 userSchema.methods.removeFromCart = function (packageId) {
   const cart = this.cart;
   const isExisting = cart.items.findIndex(
@@ -142,6 +230,25 @@ userSchema.methods.removeFromCart = function (packageId) {
     cart.items.splice(isExisting, 1);
     return this.save();
   }
+};
+
+userSchema.methods.addPatientRefer = function (referalDetails) {
+  let Patientrefer = this.Patientrefer;
+  Patientrefer.items.push({
+    referalDetails: {
+      PatientName: referalDetails.PatientName,
+      PatientAge: referalDetails.PatientAge,
+      PatientGender: referalDetails.PatientGender,
+      PatientAttendentName: referalDetails.PatientAttendentName,
+      PatientMobileNumber: referalDetails.PatientMobileNumber,
+      OrganizationCategory: referalDetails.OrganizationCategory,
+      HospitalName: referalDetails.HospitalName,
+      ServiceType: referalDetails.ServiceType,
+      Description: referalDetails.Description,
+    },
+  });
+
+  return this.save();
 };
 const User = mongoose.model("User", userSchema);
 

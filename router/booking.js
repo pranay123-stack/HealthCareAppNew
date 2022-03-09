@@ -1,35 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const Patient = require("../models/PatientSchema");
-
+const Booking = require("../models/BookingSchema");
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/bookings", (req, res) => {
-  const {
-    PatientName,
-    PatientAge,
-    PatientGender,
-    AttendentName,
-    AttendentMobileNumber,
-    PackageSellingPrice,
-  } = req.body;
+router.post("/booking/:packageid", protect, (req, res) => {
+  let user = req.user;
+  const _packageid = req.params.packageid;
 
-  const patient = new Patient({
-    PatientName,
-    PatientAge,
-    PatientGender,
-    AttendentName,
-    AttendentMobileNumber,
-    PackageSellingPrice,
+  const booking = new Booking({
+    UserId: user.id,
+    PackageId: _packageid,
+    PatientName: req.body.PatientName,
+    PatientAge: req.body.PatientAge,
+    PatientGender: req.body.PatientGender,
+    AttendentName: req.body.AttendentName,
+    MobileNumber: req.body.MobileNumber,
+    SellingPrice: req.body.SellingPrice,
   });
-
-  patient
+  booking
     .save()
-    .then((docs) => {
-      return res.json({ docs });
+    .then((result) => {
+      res.json({ message: "booking confirmed", bookingdeatils: result });
     })
     .catch((err) => {
-      return res.json({ err });
+      console.log(err);
     });
 });
 

@@ -6,11 +6,12 @@ const { protect } = require("../middleware/authMiddleware");
 router.get("/cart", (req, res) => {
   res.json({ message: "error" });
 });
-router.post("/addcart/:id", protect, (req, res, next) => {
+
+router.post("/addcart/:packageid", protect, (req, res, next) => {
   let user = req.user;
-  const _id = req.params.id;
-  console.log(_id);
-  Package.findById(_id)
+  const _packageid = req.params.packageid;
+  console.log(_packageid);
+  Package.findById(_packageid)
     .then((package) => {
       user.addToCart(package);
     })

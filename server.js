@@ -27,6 +27,7 @@ app.use(require("./router/package"));
 app.use(require("./router/lead"));
 app.use(require("./router/cart"));
 app.use(require("./router/booking"));
+app.use(require("./router/refer"));
 
 const PORT = process.env.PORT;
 

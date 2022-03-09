@@ -9,6 +9,8 @@ router.post("/addleads", protect, async (req, res) => {
   try {
     let user = req.user;
     const {
+      HospitalName,
+      PackageName,
       PatientName,
       PatientAge,
       PatientGender,
@@ -22,6 +24,8 @@ router.post("/addleads", protect, async (req, res) => {
     const data = new Lead({
       _id: new mongoose.Types.ObjectId(),
       userId: user._id,
+      HospitalName,
+      PackageName,
       PatientName,
       PatientAge,
       PatientGender,

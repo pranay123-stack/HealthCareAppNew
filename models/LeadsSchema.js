@@ -24,6 +24,17 @@ const LeadSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  HospitalName: {
+    type: String,
+    required: true,
+  },
+
+  PackageName: {
+    type: String,
+    required: true,
+  },
+
   LeadsCategory: {
     type: String,
     enum: [
