@@ -167,6 +167,7 @@ router.get("/getorgs", async (req, res, next) => {
 
 router.get("/getorgs/data/categorywise", async (req, res, next) => {
   var hospitalarray = [];
+
   const finalResults = await new Promise((resolve, reject) => {
     mongoose.connection
       .collection("organizations")
