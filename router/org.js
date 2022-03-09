@@ -168,14 +168,12 @@ router.get("/getorgs", async (req, res, next) => {
 router.get("/getorgs/data/categorywise", async (req, res, next) => {
   var hospitalarray = [];
 
-  const finalResults = await new Promise((resolve, reject) => {
-    mongoose.connection
-      .collection("organizations")
-      .find({ OrgType: "HOSPITAL" })
-      .toArray(function (err, result) {
-        resolve(result);
-      });
-  });
+  var finalResults = await mongoose.connection
+    .collection("organizations")
+    .find({
+      OrgType: "HOSPITAL",
+    })
+    .toArray();
 
   for (let i = 0; i < finalResults.length; i++) {
     let a = finalResults[i];
@@ -183,14 +181,13 @@ router.get("/getorgs/data/categorywise", async (req, res, next) => {
   }
 
   var clinicarray = [];
-  const finalResult = await new Promise((resolve, reject) => {
-    mongoose.connection
-      .collection("organizations")
-      .find({ OrgType: "CLINIC" })
-      .toArray(function (err, result) {
-        resolve(result);
-      });
-  });
+
+  var finalResult = await mongoose.connection
+    .collection("organizations")
+    .find({
+      OrgType: "CLINIC",
+    })
+    .toArray();
 
   for (let i = 0; i < finalResult.length; i++) {
     let b = finalResult[i];
