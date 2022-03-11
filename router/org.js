@@ -112,7 +112,8 @@ router.post("/addpackage/:orgid", protect, async (req, res, next) => {
 
 // populating with packages details
 router.get("/getorg/:orgid", function (req, res) {
-  Organization.findById({ _id: req.params.orgid })
+  const id = req.params.orgid;
+  Organization.findById(id)
     .populate("OrgPackages")
     .then(function (dbOrg) {
       res.json(dbOrg);
@@ -123,9 +124,9 @@ router.get("/getorg/:orgid", function (req, res) {
 });
 
 router.get("/orgquerybyorgid", (req, res) => {
-  const { id } = req.query;
+  const _id = req.query.id;
 
-  Organization.findById({ _id: id })
+  Organization.findById(_id)
     .exec()
     .then((doc) => {
       console.log("From database", doc);
