@@ -32,7 +32,7 @@ router.post("/register", async (req, res) => {
       lastname: req.body.lastname,
       gender: req.body.gender,
       email: req.body.email,
-      type: req.body.type,
+      usertype: req.body.usertype,
       phone: req.body.phone,
       password: req.body.password,
     });
@@ -44,7 +44,7 @@ router.post("/register", async (req, res) => {
       lastname: user.lastname,
       gender: user.gender,
       email: user.email,
-      type: user.type,
+      usertype: user.usertype,
       phone: user.phone,
     });
   } catch (err) {
