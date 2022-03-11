@@ -122,12 +122,10 @@ router.get("/getorg/:orgid", function (req, res) {
     });
 });
 
-router.get("/orgquerybyOrgid", (req, res) => {
-  const { Orgid } = req.query;
-  //    console.log("id ---> ",id)
+router.get("/orgquerybyorgid", (req, res) => {
+  const { id } = req.query;
 
   Organization.findById(id)
-
     .exec()
     .then((doc) => {
       console.log("From database", doc);
