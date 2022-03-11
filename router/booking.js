@@ -50,7 +50,7 @@ router.get("/getbookingsbypackageid/:packageid", (req, res) => {
 });
 
 router.get("/bookdetailbybookid/:bookid", (req, res) => {
-  Booking.findById(req.params.bookingid)
+  Booking.findById(req.params.bookid)
     .then((booking) => {
       res.status(200).json(booking);
     })
