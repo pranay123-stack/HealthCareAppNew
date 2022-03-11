@@ -21,27 +21,15 @@ router.post("/patientrefer", protect, (req, res) => {
         .catch((err) => {
           console.log(err);
         });
-
-      // res.json(doc.refer);
     })
     .catch((err) => {
       console.log(err);
     });
+
+  res.json("added successfully");
 });
 
-router.get("/patientrefer/:userid", (req, res) => {
-  const _userid = req.params.userid;
-  User.findById(_userid)
-    .then((user) => {
-      res.json({ referedetails: user.Patientrefer });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-  // res.json({ message: "working" });
-});
-
-router.post("/addlead/:leadid", protect, (req, res, next) => {
+router.post("/leadsrefer/:leadid", protect, (req, res, next) => {
   let user = req.user;
   const _leadid = req.params.leadid;
   console.log(_leadid);
@@ -56,9 +44,21 @@ router.post("/addlead/:leadid", protect, (req, res, next) => {
   next();
 });
 
+router.get("/patientrefer/:userid", (req, res) => {
+  const _userid = req.params.userid;
+  User.findById(_userid)
+    .then((user) => {
+      res.json({ referedetails: user.Patientrefer });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  // res.json({ message: "working" });
+});
+
 router.get("/leadrefer/:userid", (req, res) => {
   const _userid = req.params.userid;
-  Lead.findById(_userid)
+  User.findById(_userid)
     .then((user) => {
       res.json({ referedetails: user.Lead });
     })

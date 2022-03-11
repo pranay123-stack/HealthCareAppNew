@@ -27,4 +27,36 @@ router.post("/booking/:packageid", protect, (req, res) => {
     });
 });
 
+// list ALL BOOKINGS using booking id
+router.get("/bookings", (req, res) => {
+  Booking.find()
+    .then((bookings) => {
+      res.status(200).json(bookings);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
+
+// list all bookings of a particular package
+router.get("/bookings/:packageid", (req, res) => {
+  Booking.findById(req.params.packageid)
+    .then((bookings) => {
+      res.status(200).json(bookings);
+    })
+    .catch((err) => {
+      res.status(500).json({ err: err });
+    });
+});
+
+router.get("/bookingdetail/:bookingid", (req, res) => {
+  Booking.findById(req.params.bookingid)
+    .then((booking) => {
+      res.status(200).json(booking);
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error });
+    });
+});
+
 module.exports = router;

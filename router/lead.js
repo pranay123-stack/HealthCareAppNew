@@ -88,4 +88,14 @@ router.put("/lead/:id", protect, async (req, res, next) => {
   }
 });
 
+router.get("/getlead/:leadId", (req, res) => {
+  Lead.findById(req.params.leadId)
+    .then((lead) => {
+      res.status(200).json(lead);
+    })
+    .catch((err) => {
+      res.status(400).json({ error: err });
+    });
+});
+
 module.exports = router;

@@ -113,4 +113,30 @@ router.get("/querypackageid", (req, res) => {
     });
 });
 
+router.delete("/deletepackage/:id", protect, async (req, res, next) => {
+  const _id = req.params.id;
+  try {
+    const result = await Package.findByIdAndDelete({ _id });
+    res.status(200).json({ message: "Deleted successfully", result });
+    next();
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
+router.put("/updatepackage/:id", protect, async (req, res, next) => {
+  try {
+    const _id = req.params.id;
+    const updates = req.body;
+    const options = { new: true };
+
+    const result = await Package.findByIdAndUpdate(_id, updates, options);
+    res.status(200).json({ message: "updated successfully", result });
+
+    next();
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
 module.exports = router;

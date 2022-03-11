@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 
 const bookingSchema = new mongoose.Schema({
-  PackageId: String,
+  PackageId: {
+    type: String,
+    ref: "Package",
+  },
   userId: String,
   PatientName: String,
   PatientAge: String,

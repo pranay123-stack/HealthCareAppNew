@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
   },
 
-  type: {
+  usertype: {
     type: String,
     required: true,
   },
@@ -114,12 +114,12 @@ const userSchema = new mongoose.Schema({
     walletitems: [
       {
         PatientReferWallet: {
-          PatientRefer: Date,
+          PatientRefer: String,
           PatientName: String,
         },
 
         PackageSaleWallet: {
-          PackageSale: Date,
+          PackageSale: String,
           PatientName: String,
         },
       },
@@ -219,11 +219,12 @@ userSchema.methods.addWallet = function (referdata) {
   return this.save();
 };
 
-userSchema.methods.removeFromCart = function (packageId) {
+userSchema.methods.removeFromCart = function (cartdata) {
   const cart = this.cart;
+  cartId = cartdata._id;
   const isExisting = cart.items.findIndex(
     (objInItems) =>
-      new String(objInItems.packageId).trim() === new String(packageId).trim()
+      new String(objInItems.cartId).trim() === new String(cartId).trim()
   );
 
   if (isExisting >= 0) {

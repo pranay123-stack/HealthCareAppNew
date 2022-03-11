@@ -51,17 +51,17 @@ const OrganizationSchema = new mongoose.Schema({
     required: true,
   },
 
-  ContactName: {
+  ContactPersonName: {
     type: String,
     required: true,
   },
 
-  ContactPhoneNumber: {
+  ContactPersonPhoneNumber: {
     type: String,
     required: true,
   },
 
-  ContactEmailId: {
+  ContactPersonEmailId: {
     type: String,
     required: true,
   },

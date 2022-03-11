@@ -12,7 +12,7 @@ router.post("/register", async (req, res) => {
     !req.body.lastname ||
     !req.body.gender ||
     !req.body.email ||
-    !req.body.type ||
+    !req.body.usertype ||
     !req.body.phone ||
     !req.body.password
   ) {
@@ -32,7 +32,7 @@ router.post("/register", async (req, res) => {
       lastname: req.body.lastname,
       gender: req.body.gender,
       email: req.body.email,
-      type: req.body.type,
+      usertype: req.body.usertype,
       phone: req.body.phone,
       password: req.body.password,
     });
@@ -44,7 +44,7 @@ router.post("/register", async (req, res) => {
       lastname: user.lastname,
       gender: user.gender,
       email: user.email,
-      type: user.type,
+      usertype: user.usertype,
       phone: user.phone,
     });
   } catch (err) {
@@ -83,7 +83,7 @@ router.post("/login", async (req, res) => {
           lastname: userLogin.lastname,
           gender: userLogin.gender,
           email: userLogin.email,
-          type: userLogin.type,
+          usertype: userLogin.usertype,
           phone: userLogin.phone,
         });
         // res.redirect('/')

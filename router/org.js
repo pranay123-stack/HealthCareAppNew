@@ -13,7 +13,7 @@ cloudinary.config({
   api_secret: "o_CrJsRu7RG-FRyDBbDGj2o7J8I",
 });
 
-router.post("/addorg", (req, res, next) => {
+router.post("/addorg", protect, (req, res, next) => {
   const file = req.files.image;
   cloudinary.uploader
     .upload(file.tempFilePath, (err, result) => {
@@ -34,9 +34,9 @@ router.post("/addorg", (req, res, next) => {
         State: req.body.State,
         Country: req.body.Country,
         OrgDescription: req.body.OrgDescription,
-        ContactName: req.body.ContactName,
-        ContactPhoneNumber: req.body.ContactPhoneNumber,
-        ContactEmailId: req.body.ContactEmailId,
+        ContactPersonName: req.body.ContactPersonName,
+        ContactPersonPhoneNumber: req.body.ContactPersonPhoneNumber,
+        ContactPersonEmailId: req.body.ContactPersonEmailId,
       });
 
       organization
@@ -55,7 +55,7 @@ router.post("/addorg", (req, res, next) => {
 });
 
 // updating org to attach package
-router.post("/addpackage/:orgid", async (req, res, next) => {
+router.post("/addpackage/:orgid", protect, async (req, res, next) => {
   const file = req.files.image;
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
     // console.log(result);
@@ -116,7 +116,7 @@ router.get("/orgquerybyid", (req, res) => {
   const { id } = req.query;
   //    console.log("id ---> ",id)
 
-  Org.findById(id)
+  Organization.findById(id)
 
     .exec()
     .then((doc) => {
@@ -140,7 +140,7 @@ router.get("/orgquerybyid", (req, res) => {
 router.get("/orgquerybytype", async (req, res) => {
   const { OrgType } = req.query;
 
-  Org.find({ OrgType: OrgType }, {})
+  Organization.find({ OrgType: OrgType }, {})
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -202,7 +202,7 @@ router.get("/getorgs/data/categorywise", async (req, res, next) => {
 router.delete("/deleteorg/:id", protect, async (req, res, next) => {
   const _id = req.params.id;
   try {
-    const result = await Org.findByIdAndDelete({ _id });
+    const result = await Organization.findByIdAndDelete({ _id });
     res.status(200).json({ message: "Deleted successfully", result });
     next();
   } catch (err) {
@@ -216,7 +216,7 @@ router.put("/updateorg/:id", protect, async (req, res, next) => {
     const updates = req.body;
     const options = { new: true };
 
-    const result = await Org.findByIdAndUpdate(_id, updates, options);
+    const result = await Organization.findByIdAndUpdate(_id, updates, options);
     res.status(200).json({ message: "updated successfully", result });
 
     next();
