@@ -55,7 +55,7 @@ router.get("/allpackages", async (req, res, next) => {
   }
 });
 
-router.get("/queryorgpackage", (req, res) => {
+router.get("/querypackagebyOrgName", (req, res) => {
   const { OrgName } = req.query;
   Package.find({ OrgName: OrgName }, {})
     .exec()
@@ -72,7 +72,7 @@ router.get("/queryorgpackage", (req, res) => {
     });
 });
 
-router.get("/querypackagedetail", (req, res) => {
+router.get("/querypackagebyPackageName", (req, res) => {
   const { PackageName } = req.query;
   Package.find({ PackageName: PackageName })
     .exec()
@@ -89,7 +89,7 @@ router.get("/querypackagedetail", (req, res) => {
     });
 });
 
-router.get("/querypackageid", (req, res) => {
+router.get("/querypackagebypackageid", (req, res) => {
   const { id } = req.query;
   //    console.log("id ---> ",id)
 
@@ -113,8 +113,8 @@ router.get("/querypackageid", (req, res) => {
     });
 });
 
-router.delete("/deletepackage/:id", protect, async (req, res, next) => {
-  const _id = req.params.id;
+router.delete("/deletepackage/:packageid", protect, async (req, res, next) => {
+  const _id = req.params.packageid;
   try {
     const result = await Package.findByIdAndDelete({ _id });
     res.status(200).json({ message: "Deleted successfully", result });
@@ -124,9 +124,9 @@ router.delete("/deletepackage/:id", protect, async (req, res, next) => {
   }
 });
 
-router.put("/updatepackage/:id", protect, async (req, res, next) => {
+router.put("/updatepackage/:packageid", protect, async (req, res, next) => {
   try {
-    const _id = req.params.id;
+    const _id = req.params.packageid;
     const updates = req.body;
     const options = { new: true };
 

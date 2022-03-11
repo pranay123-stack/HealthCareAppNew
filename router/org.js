@@ -54,6 +54,16 @@ router.post("/addorg", protect, (req, res, next) => {
     });
 });
 
+router.get("/getorgs", async (req, res, next) => {
+  try {
+    const results = await Organization.find();
+    res.status(200).json({ results });
+    next();
+  } catch (err) {
+    res.send(err);
+  }
+});
+
 // updating org to attach package
 router.post("/addpackage/:orgid", protect, async (req, res, next) => {
   const file = req.files.image;
@@ -101,7 +111,7 @@ router.post("/addpackage/:orgid", protect, async (req, res, next) => {
 });
 
 // populating with packages details
-router.get("/getorg/:id", function (req, res) {
+router.get("/getorg/:orgid", function (req, res) {
   Organization.findById({ _id: req.params.id })
     .populate("OrgPackages")
     .then(function (dbOrg) {
@@ -112,7 +122,7 @@ router.get("/getorg/:id", function (req, res) {
     });
 });
 
-router.get("/orgquerybyid", (req, res) => {
+router.get("/orgquerybyOrgid", (req, res) => {
   const { id } = req.query;
   //    console.log("id ---> ",id)
 
@@ -137,7 +147,7 @@ router.get("/orgquerybyid", (req, res) => {
     });
 });
 
-router.get("/orgquerybytype", async (req, res) => {
+router.get("/orgquerybyOrgType", async (req, res) => {
   const { OrgType } = req.query;
 
   Organization.find({ OrgType: OrgType }, {})
@@ -153,16 +163,6 @@ router.get("/orgquerybytype", async (req, res) => {
       console.log(err);
       res.status(500).json({ error: err });
     });
-});
-
-router.get("/getorgs", async (req, res, next) => {
-  try {
-    const results = await Organization.find();
-    res.status(200).json({ results });
-    next();
-  } catch (err) {
-    res.send(err);
-  }
 });
 
 router.get("/getorgs/data/categorywise", async (req, res, next) => {
@@ -199,8 +199,8 @@ router.get("/getorgs/data/categorywise", async (req, res, next) => {
   next();
 });
 
-router.delete("/deleteorg/:id", protect, async (req, res, next) => {
-  const _id = req.params.id;
+router.delete("/deleteorg/:orgid", protect, async (req, res, next) => {
+  const _id = req.params.orgid;
   try {
     const result = await Organization.findByIdAndDelete({ _id });
     res.status(200).json({ message: "Deleted successfully", result });
@@ -210,9 +210,9 @@ router.delete("/deleteorg/:id", protect, async (req, res, next) => {
   }
 });
 
-router.put("/updateorg/:id", protect, async (req, res, next) => {
+router.put("/updateorg/:orgid", protect, async (req, res, next) => {
   try {
-    const _id = req.params.id;
+    const _id = req.params.orgid;
     const updates = req.body;
     const options = { new: true };
 

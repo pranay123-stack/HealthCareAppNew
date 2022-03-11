@@ -65,7 +65,7 @@ router.get("/getleads", (req, res) => {
     });
 });
 
-router.delete("/lead/:id", protect, async (req, res, next) => {
+router.delete("/deletelead/:leadid", protect, async (req, res, next) => {
   const _id = req.params.id;
   try {
     const result = await Lead.findByIdAndDelete({ _id });
@@ -75,9 +75,9 @@ router.delete("/lead/:id", protect, async (req, res, next) => {
   }
 });
 
-router.put("/lead/:id", protect, async (req, res, next) => {
+router.put("/updatelead/:leadid", protect, async (req, res, next) => {
   try {
-    const _id = req.params.id;
+    const _id = req.params.leadid;
     const updates = req.body;
     const options = { new: true };
 
@@ -88,8 +88,8 @@ router.put("/lead/:id", protect, async (req, res, next) => {
   }
 });
 
-router.get("/getlead/:leadId", (req, res) => {
-  Lead.findById(req.params.leadId)
+router.get("/getlead/:leadid", (req, res) => {
+  Lead.findById(req.params.leadid)
     .then((lead) => {
       res.status(200).json(lead);
     })
