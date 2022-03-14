@@ -66,10 +66,10 @@ router.post("/login", async (req, res) => {
         userLogin.password
       );
 
-      const signtoken = await userLogin.generateAuthToken();
-      if (signtoken) {
-        res.json(signtoken);
-      }
+      var signtoken = await userLogin.generateAuthToken();
+      // if (signtoken) {
+      //   res.json(signtoken);
+      // }
 
       if (!isMatch) {
         res.status(400).json({ message: "Invalid credentials" });
