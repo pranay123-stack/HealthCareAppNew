@@ -67,7 +67,6 @@ router.post("/login", async (req, res) => {
       );
 
       const signtoken = await userLogin.generateAuthToken();
-      console.log(signtoken);
 
       if (!isMatch) {
         res.status(400).json({ message: "Invalid credentials" });
@@ -87,7 +86,6 @@ router.post("/login", async (req, res) => {
           phone: userLogin.phone,
           signintoken: signtoken,
         });
-        // res.redirect('/')
       }
     } else {
       res.status(400).json({
