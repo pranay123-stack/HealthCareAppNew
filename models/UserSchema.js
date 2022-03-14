@@ -91,7 +91,7 @@ const userSchema = new mongoose.Schema({
   },
 
   ReferLeads: {
-    items: [
+    leadsrefered: [
       {
         leadId: {
           type: mongoose.Schema.Types.ObjectId,
@@ -190,7 +190,7 @@ userSchema.methods.addToCart = function (package) {
 
 userSchema.methods.addLead = function (leaddata) {
   let ReferLeads = this.ReferLeads;
-  ReferLeads.items.push({
+  ReferLeads.leadsrefered.push({
     leadId: leaddata._id,
 
     leadDetails: {
