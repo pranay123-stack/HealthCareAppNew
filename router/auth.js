@@ -85,6 +85,7 @@ router.post("/login", async (req, res) => {
           email: userLogin.email,
           usertype: userLogin.usertype,
           phone: userLogin.phone,
+          signintoken: signtoken,
         });
         // res.redirect('/')
       }

@@ -72,7 +72,7 @@ router.post("/addpackage/:orgid", protect, async (req, res, next) => {
 
     data = new Package({
       _id: new mongoose.Types.ObjectId(),
-      PortalPrice: req.body.PortalPrice,
+
       PackageType: req.body.PackageType,
       Thumbnail: req.body.Thumbnail,
       PaymentOption: req.body.PaymentOption,
@@ -81,8 +81,11 @@ router.post("/addpackage/:orgid", protect, async (req, res, next) => {
       PackageName: req.body.PackageName,
       PackageDescription: req.body.PackageDescription,
       image: result.url,
+      Quantity: req.body.Quantity,
       ActualPrice: req.body.ActualPrice,
       OfferPrice: req.body.OfferPrice,
+      PortalPrice: req.body.PortalPrice,
+      MaxPrice: req.body.MaxPrice,
     });
 
     data

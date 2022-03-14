@@ -45,6 +45,14 @@ const PackageSchema = new mongoose.Schema({
     type: Number,
   },
 
+  MaxPrice: {
+    type: Number,
+  },
+
+  Quantity: {
+    type: Number,
+  },
+
   PaymentOption: {
     type: String,
     enum: ["Offline", "Online"],

@@ -98,4 +98,15 @@ router.get("/getlead/:leadid", (req, res) => {
     });
 });
 
+router.get("/getcreatedleads/:userid", (req, res) => {
+  const id = req.params.userid;
+
+  Lead.findById({ userId: id }, (err, result) => {
+    if (err) return res.status(422).json({ message: err });
+    res.status(200).json({ result });
+  });
+});
+
+router.get("/getreferleads/:userid", (req, res) => {});
+
 module.exports = router;

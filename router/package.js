@@ -20,7 +20,6 @@ router.post("/addpackage", protect, (req, res, next) => {
 
       data = new Package({
         _id: new mongoose.Types.ObjectId(),
-        PortalPrice: req.body.PortalPrice,
         Thumbnail: req.body.Thumbnail,
         PackageType: req.body.PackageType,
         PaymentOption: req.body.PaymentOption,
@@ -29,8 +28,11 @@ router.post("/addpackage", protect, (req, res, next) => {
         PackageName: req.body.PackageName,
         PackageDescription: req.body.PackageDescription,
         image: result.url,
+        Quantity: req.body.Quantity,
         ActualPrice: req.body.ActualPrice,
         OfferPrice: req.body.OfferPrice,
+        PortalPrice: req.body.PortalPrice,
+        MaxPrice: req.body.MaxPrice,
       });
 
       data.save().then((result) => {
