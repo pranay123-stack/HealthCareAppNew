@@ -37,20 +37,25 @@ const PackageSchema = new mongoose.Schema({
 
   ActualPrice: {
     type: Number,
+    required: true,
   },
   PortalPrice: {
     type: Number,
+    required: true,
   },
   OfferPrice: {
     type: Number,
+    required: true,
   },
 
   MaxPrice: {
     type: Number,
+    required: true,
   },
 
   Quantity: {
     type: Number,
+    required: true,
   },
 
   PaymentOption: {

@@ -101,4 +101,13 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/allusers", (req, res) => {
+  User.find()
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
 module.exports = router;
