@@ -168,37 +168,41 @@ router.get("/orgquerybyOrgType", async (req, res) => {
 });
 
 router.get("/getorgs/data/categorywise", async (req, res, next) => {
-  var hospitalarray = [];
+  try {
+    var hospitalarray = [];
 
-  var finalResults = await mongoose.connection
-    .collection("organizations")
-    .find({
-      OrgType: "HOSPITAL",
-    })
-    .toArray();
+    var finalResults = await mongoose.connection
+      .collection("organizations")
+      .find({
+        OrgType: "HOSPITAL",
+      })
+      .toArray();
 
-  for (let i = 0; i < finalResults.length; i++) {
-    let a = finalResults[i];
-    hospitalarray.push(a);
+    for (let i = 0; i < finalResults.length; i++) {
+      let a = finalResults[i];
+      hospitalarray.push(a);
+    }
+
+    var clinicarray = [];
+
+    var finalResult = await mongoose.connection
+      .collection("organizations")
+      .find({
+        OrgType: "CLINIC",
+      })
+      .toArray();
+
+    for (let i = 0; i < finalResult.length; i++) {
+      let b = finalResult[i];
+      clinicarray.push(b);
+    }
+
+    return res.json({ hospitalarray, clinicarray });
+
+    next();
+  } catch (error) {
+    res.json({ error: error });
   }
-
-  var clinicarray = [];
-
-  var finalResult = await mongoose.connection
-    .collection("organizations")
-    .find({
-      OrgType: "CLINIC",
-    })
-    .toArray();
-
-  for (let i = 0; i < finalResult.length; i++) {
-    let b = finalResult[i];
-    clinicarray.push(b);
-  }
-
-  return res.json({ hospitalarray, clinicarray });
-
-  next();
 });
 
 router.delete("/deleteorg/:orgid", protect, async (req, res, next) => {
@@ -208,7 +212,9 @@ router.delete("/deleteorg/:orgid", protect, async (req, res, next) => {
     res.status(200).json({ message: "Deleted successfully", result });
     next();
   } catch (err) {
-    res.status(500).json({ error: err });
+    res
+      .status(500)
+      .json({ error: "user is not allowed to delete before authorized" });
   }
 });
 
@@ -223,7 +229,9 @@ router.put("/updateorg/:orgid", protect, async (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(500).json({ error: err });
+    res
+      .status(500)
+      .json({ error: "user is not allowed to update before authorized" });
   }
 });
 

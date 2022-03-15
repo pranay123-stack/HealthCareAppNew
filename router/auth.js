@@ -101,14 +101,25 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/users", (req, res) => {
-  User.find()
-    .then((user) => {
+router.get("/getusers", async function (req, res) {
+  User.find({}, (err, user) => {
+    if (err) {
+      throw err;
+    }
+
+    if (user) {
       res.json(user);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
+    }
+  });
 });
+// router.get("/users", (req, res) => {
+//   User.find()
+//     .then((user) => {
+//       res.json(user);
+//     })
+//     .catch((err) => {
+//       res.json(err);
+//     });
+// });
 
 module.exports = router;
