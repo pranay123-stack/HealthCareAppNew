@@ -101,7 +101,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/allusers", (req, res) => {
+router.get("/users", (req, res) => {
   User.find()
     .then((user) => {
       res.json(user);
@@ -110,4 +110,5 @@ router.get("/allusers", (req, res) => {
       res.json(err);
     });
 });
+
 module.exports = router;
