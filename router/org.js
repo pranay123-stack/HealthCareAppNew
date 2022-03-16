@@ -171,33 +171,81 @@ router.get("/getorgs/data/categorywise", async (req, res, next) => {
   try {
     var hospitalarray = [];
 
-    var finalResults = await mongoose.connection
+    var hospitalResult = await mongoose.connection
       .collection("organizations")
       .find({
         OrgType: "HOSPITAL",
       })
       .toArray();
 
-    for (let i = 0; i < finalResults.length; i++) {
-      let a = finalResults[i];
+    for (let i = 0; i < hospitalResult.length; i++) {
+      let a = hospitalResult[i];
       hospitalarray.push(a);
     }
 
     var clinicarray = [];
 
-    var finalResult = await mongoose.connection
+    var clinicResult = await mongoose.connection
       .collection("organizations")
       .find({
         OrgType: "CLINIC",
       })
       .toArray();
 
-    for (let i = 0; i < finalResult.length; i++) {
-      let b = finalResult[i];
+    for (let i = 0; i < clinicResult.length; i++) {
+      let b = clinicResult[i];
       clinicarray.push(b);
     }
 
-    return res.json({ hospitalarray, clinicarray });
+    var labarray = [];
+
+    var labResult = await mongoose.connection
+      .collection("organizations")
+      .find({
+        OrgType: "LABS",
+      })
+      .toArray();
+
+    for (let i = 0; i < labResult.length; i++) {
+      let b = labResult[i];
+      labarray.push(b);
+    }
+
+    var wellnessarray = [];
+
+    var wellnessResult = await mongoose.connection
+      .collection("organizations")
+      .find({
+        OrgType: "WELLNESS",
+      })
+      .toArray();
+
+    for (let i = 0; i < wellnessResult.length; i++) {
+      let b = wellnessResult[i];
+      wellnessarray.push(b);
+    }
+
+    var diagnosticarray = [];
+
+    var diagnosticResult = await mongoose.connection
+      .collection("organizations")
+      .find({
+        OrgType: "DIAGNOSTIC",
+      })
+      .toArray();
+
+    for (let i = 0; i < diagnosticResult.length; i++) {
+      let b = diagnosticResult[i];
+      diagnosticarray.push(b);
+    }
+
+    return res.json({
+      hospitalarray,
+      clinicarray,
+      labarray,
+      wellnessarray,
+      diagnosticarray,
+    });
 
     next();
   } catch (error) {
