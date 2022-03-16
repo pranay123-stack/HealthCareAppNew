@@ -111,7 +111,7 @@ router.get("/users", (req, res) => {
     });
 });
 
-router.put("/userupdate/:userid", async (req, res) => {
+router.put("/userupdate/:userid", async (req, res, next) => {
   try {
     const _id = req.params.userid;
     const updates = req.body;
