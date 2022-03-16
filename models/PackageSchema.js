@@ -3,11 +3,6 @@ const mongoose = require("mongoose");
 const PackageSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
 
-  OrgName: {
-    type: String,
-    required: true,
-  },
-
   PackageName: {
     type: String,
     required: true,
