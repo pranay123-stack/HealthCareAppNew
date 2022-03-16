@@ -7,7 +7,7 @@ const Lead = require("../models/LeadsSchema");
 //refer route
 router.post("/patientrefer", protect, (req, res) => {
   let user = req.user;
-  let referDetails = req.body;
+  var referDetails = req.body;
 
   user
     .addPatientRefer(referDetails)

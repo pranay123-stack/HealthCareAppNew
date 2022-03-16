@@ -270,6 +270,7 @@ router.put("/updateorg/:orgid", protect, async (req, res, next) => {
   try {
     const _id = req.params.orgid;
     const updates = req.body;
+
     const options = { new: true };
 
     const result = await Organization.findByIdAndUpdate(_id, updates, options);
