@@ -101,25 +101,42 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/getusers", async function (req, res) {
-  User.find({}, (err, user) => {
-    if (err) {
-      throw err;
-    }
-
-    if (user) {
+router.get("/users", (req, res) => {
+  User.find()
+    .then((user) => {
       res.json(user);
-    }
-  });
+    })
+    .catch((err) => {
+      res.json(err);
+    });
 });
-// router.get("/users", (req, res) => {
-//   User.find()
-//     .then((user) => {
-//       res.json(user);
-//     })
-//     .catch((err) => {
-//       res.json(err);
-//     });
-// });
+
+router.put("/userupdate/:userid", async (req, res) => {
+  try {
+    const _id = req.params.userid;
+    const updates = req.body;
+    const options = { new: true };
+
+    const result = await User.findByIdAndUpdate(_id, updates, options);
+    res.status(200).json({ message: "user updated successfully", result });
+
+    next();
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
+router.delete("/userdelete/:userid", async (req, res) => {
+  const _id = req.params.userid;
+  try {
+    const result = await User.findByIdAndDelete({ _id });
+    res.status(200).json({ message: "User deleted successfully", result });
+    next();
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "user is not allowed to delete before authorized" });
+  }
+});
 
 module.exports = router;
