@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Package = require("../models/PackageSchema");
+
 const Lead = require("../models/LeadsSchema");
 
 const userSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
+  _userid: { type: mongoose.Schema.Types.ObjectId },
   firstname: {
     type: String,
     required: true,
@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
       {
         packageId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: Package,
+          // ref: Package,
           required: true,
         },
 

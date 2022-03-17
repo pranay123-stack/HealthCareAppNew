@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const Package = require("../models/PackageSchema");
+const Organization = require("../models/OrganizatioSchema");
+// const Package = require("../models/PackageSchema");
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/addcart/:packageid", protect, (req, res, next) => {
   let user = req.user;
   const _packageid = req.params.packageid;
 
-  Package.findById(_packageid)
+  Organization.findById(_packageid)
     .then((package) => {
       user.addToCart(package);
     })

@@ -1,46 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const Booking = require("../models/BookingSchema");
+const mongoose = require("mongoose");
+const Organization = require("../models/OrganizatioSchema");
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/addbookingbypackageid/:packageid", protect, (req, res) => {
-  let user = req.user;
-  const _packageid = req.params.packageid;
+router.put("/addbooking/:packageid", protect, (req, res) => {
+  var _packageid = req.params.packageid;
 
-  const booking = new Booking({
-    UserId: user.id,
-    PackageId: _packageid,
-    PatientName: req.body.PatientName,
-    PatientAge: req.body.PatientAge,
-    PatientGender: req.body.PatientGender,
-    AttendentName: req.body.AttendentName,
-    MobileNumber: req.body.MobileNumber,
-    SellingPrice: req.body.SellingPrice,
-  });
-  booking
-    .save()
-    .then((result) => {
-      res.json({ message: "booking confirmed", bookingdeatils: result });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+  var bookingdetail = {
+    _bookingid: new mongoose.Types.ObjectId(),
 
-// list ALL BOOKINGS using booking id
-router.get("/allbookings", (req, res) => {
-  Booking.find()
-    .then((bookings) => {
-      res.status(200).json(bookings);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
+    PatientName: String,
+    PatientAge: String,
+    PatientGender: String,
+    AttendentName: String,
+    MobileNumber: Number,
+    SellingPrice: Number,
+  };
+
+  Organization.updateOne(
+    { _packageid: _packageid },
+    { $push: { PackageBookings: bookingdetail } },
+
+    function (err, result) {
+      if (err) {
+        res.json(err);
+      } else {
+        res.json(result);
+      }
+    }
+  );
 });
 
 // list all bookings of a particular package
 router.get("/getbookingsbypackageid/:packageid", (req, res) => {
-  Booking.findById(req.params.packageid)
+  Organization.findById(req.params.packageid)
     .then((bookings) => {
       res.status(200).json(bookings);
     })
@@ -50,7 +44,7 @@ router.get("/getbookingsbypackageid/:packageid", (req, res) => {
 });
 
 router.get("/bookdetailbybookid/:bookid", (req, res) => {
-  Booking.findById(req.params.bookid)
+  Organization.findById(req.params.bookid)
     .then((booking) => {
       res.status(200).json(booking);
     })

@@ -1,12 +1,43 @@
 const mongoose = require("mongoose");
 
+var bookings = new mongoose.Schema({
+  _bookingid: { type: mongoose.Schema.Types.ObjectId },
+
+  PatientName: {
+    type: String,
+    required: true,
+  },
+  PatientAge: {
+    type: String,
+    required: true,
+  },
+  PatientGender: {
+    type: String,
+    required: true,
+  },
+  AttendentName: {
+    type: String,
+    required: true,
+  },
+  MobileNumber: {
+    type: Number,
+    required: true,
+  },
+  SellingPrice: {
+    type: Number,
+    required: true,
+  },
+});
+
 var packages = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
+  _packageid: { type: mongoose.Schema.Types.ObjectId },
 
   PackageName: {
     type: String,
     required: true,
   },
+
+  PackageBookings: [bookings],
 
   PackageType: {
     type: String,
@@ -69,7 +100,7 @@ var packages = new mongoose.Schema({
 });
 
 const OrganizationSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
+  _orgid: { type: mongoose.Schema.Types.ObjectId },
 
   OrgPackages: [packages],
 

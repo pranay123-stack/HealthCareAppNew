@@ -27,7 +27,7 @@ router.post("/register", async (req, res) => {
     }
 
     const user = new User({
-      _id: new mongoose.Types.ObjectId(),
+      _userid: new mongoose.Types.ObjectId(),
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       gender: req.body.gender,
@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
     });
     await user.save();
     res.status(201).json({
-      _id: user._id,
+      _userid: user._userid,
       message: "user registered successfully",
       firstname: user.firstname,
       lastname: user.lastname,
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
 
           status: "true",
 
-          user_id: userLogin._id,
+          _userid: userLogin._userid,
 
           firstname: userLogin.firstname,
           lastname: userLogin.lastname,

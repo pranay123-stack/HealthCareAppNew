@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 var Organization = require("../models/OrganizatioSchema");
 
-const Package = require("../models/PackageSchema");
+// const Package = require("../models/PackageSchema");
 const cloudinary = require("cloudinary").v2;
 const { protect } = require("../middleware/authMiddleware");
 
@@ -20,7 +20,7 @@ router.post("/addorg", protect, (req, res, next) => {
       console.log(result);
 
       organization = new Organization({
-        _id: new mongoose.Types.ObjectId(),
+        _orgid: new mongoose.Types.ObjectId(),
         OrgName: req.body.OrgName,
         image: result.url,
 
@@ -64,20 +64,19 @@ router.get("/getorgs", async (req, res, next) => {
   }
 });
 
-// updating org to attach package
-router.post("/addpackage/:orgid", protect, async (req, res, next) => {
+router.put("/addpackage/:orgid", protect, async (req, res, next) => {
   const file = req.files.image;
+  const { orgid } = req.params;
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
     // console.log(result);
-
-    data = new Package({
-      _id: new mongoose.Types.ObjectId(),
+    var detail = {
+      _packageid: new mongoose.Types.ObjectId(),
 
       PackageType: req.body.PackageType,
       Thumbnail: req.body.Thumbnail,
       PaymentOption: req.body.PaymentOption,
       PackageStatus: req.body.PackageStatus,
-      OrgName: req.body.OrgName,
+
       PackageName: req.body.PackageName,
       PackageDescription: req.body.PackageDescription,
       image: result.url,
@@ -86,38 +85,27 @@ router.post("/addpackage/:orgid", protect, async (req, res, next) => {
       OfferPrice: req.body.OfferPrice,
       PortalPrice: req.body.PortalPrice,
       MaxPrice: req.body.MaxPrice,
-    });
+    };
 
-    data
-      .save()
+    Organization.updateOne(
+      { _orgid: orgid },
+      { $push: { OrgPackages: detail } },
 
-      .then(function (dbPackage) {
-        console.log(dbPackage);
-        try {
-          return Organization.updateOne(
-            { _id: req.params.orgid },
-            { $push: { OrgPackages: dbPackage._id } }
-          );
-        } catch (err) {
-          console.log("-----> ", err.message);
+      function (err, result) {
+        if (err) {
+          res.json(err);
+        } else {
+          res.json(result);
         }
-      })
-
-      .then(function (dbOrg) {
-        console.log("------> Success!!");
-        res.json(dbOrg);
-      })
-      .catch(function (err) {
-        res.json(err);
-      });
+      }
+    );
   });
 });
 
-// populating with packages details
 router.get("/getorg/:orgid", function (req, res) {
   const id = req.params.orgid;
-  Organization.findById(id)
-    .populate("OrgPackages")
+  Organization.find({ _orgid: id })
+
     .then(function (dbOrg) {
       res.json(dbOrg);
     })
@@ -127,9 +115,9 @@ router.get("/getorg/:orgid", function (req, res) {
 });
 
 router.get("/orgquerybyorgid", (req, res) => {
-  const _id = req.query.id;
+  const _id = req.query.orgid;
 
-  Organization.findById(_id)
+  Organization.find({ _orgid: _id })
     .exec()
     .then((doc) => {
       console.log("From database", doc);
@@ -256,7 +244,7 @@ router.get("/getorgs/data/categorywise", async (req, res, next) => {
 router.delete("/deleteorg/:orgid", protect, async (req, res, next) => {
   const _id = req.params.orgid;
   try {
-    const result = await Organization.findByIdAndDelete({ _id });
+    const result = await Organization.findOneAndDelete({ _orgid: _id });
     res.status(200).json({ message: "Deleted successfully", result });
     next();
   } catch (err) {
@@ -273,7 +261,11 @@ router.put("/updateorg/:orgid", protect, async (req, res, next) => {
 
     const options = { new: true };
 
-    const result = await Organization.findByIdAndUpdate(_id, updates, options);
+    const result = await Organization.findOneAndUpdate(
+      { _orgid: _id },
+      updates,
+      options
+    );
     res.status(200).json({ message: "updated successfully", result });
 
     next();

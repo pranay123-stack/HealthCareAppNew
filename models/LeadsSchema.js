@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const LeadSchema = new mongoose.Schema(
   {
-    _id: mongoose.Schema.Types.ObjectId,
+    _leadid: { type: mongoose.Schema.Types.ObjectId },
 
     PatientName: {
       type: String,
@@ -13,7 +13,7 @@ const LeadSchema = new mongoose.Schema(
       required: true,
     },
 
-    userId: {
+    _userid: {
       type: String,
       ref: "User",
     },
