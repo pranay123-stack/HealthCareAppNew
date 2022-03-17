@@ -22,54 +22,36 @@ router.get("/querypackagebyOrgName", (req, res) => {
 });
 
 router.get("/querypackagebypackageid", (req, res) => {
-  const _packageid = req.query.packageid;
+  Organization.find(
+    { "OrgPackages._packageid": req.query.packageid },
+    { "OrgPackages.$": 1 }
+  )
 
-  Organization.findOne({ "packages._packageid": _packageid }, (err, docs) => {
-    if (err) throw err;
-
-    res.json({
-      OrgName: docs.OrgName,
-      OrgPackages: docs.OrgPackages,
-      // OrgPackages: docs.OrgPackages[1],
-
-      // PackageName: docs.OrgPackages.PackageName,
-      // PackageType: docs.OrgPackages.PackageType,
-      // PackageDescription: docs.OrgPackages.PackageDescription,
-      // image: docs.OrgPackages.image,
-      // ActualPrice: docs.OrgPackages.ActualPrice,
-      // PortalPrice: docs.OrgPackages.PortalPrice,
+    .then((data) => {
+      const newData = data[0];
+      console.log(data);
+      const finalData = newData.OrgPackages[0];
+      res.json(finalData);
+    })
+    .catch((err) => {
+      res.json({ err: err });
     });
-  });
 });
 
 router.delete("/deletepackage/:packageid", protect, async (req, res, next) => {
-  const _id = req.params.packageid;
-  try {
-    const result = await Organization.findOneAndDelete({ _packageid: _id });
-    res.status(200).json({ message: "Deleted successfully", result });
-    next();
-  } catch (err) {
-    res.status(500).json({ error: err });
-  }
+  Organization.findOneAndUpdate(
+    { "OrgPackages._packageid": req.params.packageid },
+    { $pull: { OrgPackages: { _packageid: req.params.packageid } } },
+    { new: true }
+  )
+    .then((data) => {
+      res.json("package data of corresponding packageid deleted successfully");
+    })
+    .catch((err) => {
+      res.json({ err: err });
+    });
 });
 
-router.put("/updatepackage/:packageid", protect, async (req, res, next) => {
-  try {
-    const _id = req.params.packageid;
-    const updates = req.body;
-    const options = { new: true };
-
-    const result = await Organization.findOneAndUpdate(
-      { "packages._packageid": _id },
-      updates,
-      options
-    );
-    res.status(200).json({ message: "updated successfully", result });
-
-    next();
-  } catch (err) {
-    res.status(500).json({ error: err });
-  }
-});
+// Update package Route
 
 module.exports = router;

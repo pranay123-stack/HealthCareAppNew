@@ -4,23 +4,31 @@ const mongoose = require("mongoose");
 const Organization = require("../models/OrganizatioSchema");
 const { protect } = require("../middleware/authMiddleware");
 
-router.put("/addbooking/:packageid", protect, (req, res) => {
-  var _packageid = req.params.packageid;
+router.put("/addbooking/:packageid", (req, res) => {
+  const { packageid } = req.params;
 
-  var bookingdetail = {
+  var detail = {
     _bookingid: new mongoose.Types.ObjectId(),
-
-    PatientName: String,
-    PatientAge: String,
-    PatientGender: String,
-    AttendentName: String,
-    MobileNumber: Number,
-    SellingPrice: Number,
+    PatientName: req.body.PatientName,
+    PatientAge: req.body.PatientAge,
+    PatientGender: req.body.PatientGender,
+    AttendentName: req.body.AttendentName,
+    MobileNumber: req.body.MobileNumber,
+    SellingPrice: req.body.SellingPrice,
   };
 
-  Organization.updateOne(
-    { _packageid: _packageid },
-    { $push: { PackageBookings: bookingdetail } },
+  Organization.findOneAndUpdate(
+    { "OrgPackages._packageid": packageid },
+
+    {
+      $push: {
+        OrgPackages: {
+          packages: {
+            PackageBookings: detail,
+          },
+        },
+      },
+    },
 
     function (err, result) {
       if (err) {

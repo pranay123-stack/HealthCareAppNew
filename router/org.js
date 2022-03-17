@@ -254,6 +254,7 @@ router.delete("/deleteorg/:orgid", protect, async (req, res, next) => {
   }
 });
 
+// Update Organization
 router.put("/updateorg/:orgid", protect, async (req, res, next) => {
   try {
     const _id = req.params.orgid;
