@@ -5,8 +5,6 @@ const Organization = require("../models/OrganizatioSchema");
 const { protect } = require("../middleware/authMiddleware");
 
 router.put("/addbooking/:packageid", (req, res) => {
-  const { packageid } = req.params;
-
   var detail = {
     _bookingid: new mongoose.Types.ObjectId(),
     PatientName: req.body.PatientName,
@@ -17,18 +15,10 @@ router.put("/addbooking/:packageid", (req, res) => {
     SellingPrice: req.body.SellingPrice,
   };
 
-  Organization.findOneAndUpdate(
-    { "OrgPackages._packageid": packageid },
-
-    {
-      $push: {
-        OrgPackages: {
-          packages: {
-            PackageBookings: detail,
-          },
-        },
-      },
-    },
+  Organization.updateOne(
+    { "OrgPackages._packageid": req.params.packageid },
+    // { "OrgPackages.$": 1 },
+    { $push: { "OrgPackages.$.PackageBookings": detail } },
 
     function (err, result) {
       if (err) {
@@ -41,23 +31,21 @@ router.put("/addbooking/:packageid", (req, res) => {
 });
 
 // list all bookings of a particular package
-router.get("/getbookingsbypackageid/:packageid", (req, res) => {
-  Organization.findById(req.params.packageid)
-    .then((bookings) => {
-      res.status(200).json(bookings);
+router.get("/bookings/:packageid", (req, res) => {
+  Organization.find(
+    { "OrgPackages._packageid": req.params.packageid },
+    { "OrgPackages.$": 1 }
+  )
+
+    .then((data) => {
+      const newData = data[0];
+      const finalData = newData.OrgPackages[0];
+      const allpackageBookings = finalData.PackageBookings;
+
+      res.json({ AllBookings: allpackageBookings });
     })
     .catch((err) => {
-      res.status(500).json({ err: err });
-    });
-});
-
-router.get("/bookdetailbybookid/:bookid", (req, res) => {
-  Organization.findById(req.params.bookid)
-    .then((booking) => {
-      res.status(200).json(booking);
-    })
-    .catch((error) => {
-      res.status(500).json({ error: error });
+      res.json({ err: err });
     });
 });
 

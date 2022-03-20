@@ -29,7 +29,6 @@ router.get("/querypackagebypackageid", (req, res) => {
 
     .then((data) => {
       const newData = data[0];
-      console.log(data);
       const finalData = newData.OrgPackages[0];
       res.json(finalData);
     })
@@ -53,5 +52,23 @@ router.delete("/deletepackage/:packageid", protect, async (req, res, next) => {
 });
 
 // Update package Route
+router.put("/updatepackage/:packageid", (req, res) => {
+  var updates = req.body;
+  var options = { new: true };
+
+  Organization.findOneAndUpdate(
+    { "OrgPackages._packageid": req.params.packageid },
+
+    updates,
+    options,
+
+    function (err, result) {
+      if (err) {
+        return err;
+      }
+      res.json(result);
+    }
+  );
+});
 
 module.exports = router;

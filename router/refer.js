@@ -44,7 +44,7 @@ router.post("/leadsrefer/:leadid", protect, (req, res, next) => {
   next();
 });
 
-router.get("/patientrefer/:userid", (req, res) => {
+router.get("/patientsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
   User.findById(_userid)
     .then((user) => {
@@ -56,7 +56,7 @@ router.get("/patientrefer/:userid", (req, res) => {
   // res.json({ message: "working" });
 });
 
-router.get("/leadrefer/:userid", (req, res) => {
+router.get("/leadsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
   User.findById(_userid)
     .then((user) => {

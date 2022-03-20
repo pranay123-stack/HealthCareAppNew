@@ -4,7 +4,7 @@ const Organization = require("../models/OrganizatioSchema");
 // const Package = require("../models/PackageSchema");
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/addcart/:packageid", protect, (req, res, next) => {
+router.post("/addtocart/:packageid", protect, (req, res, next) => {
   let user = req.user;
   const _packageid = req.params.packageid;
 
