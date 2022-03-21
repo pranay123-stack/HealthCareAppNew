@@ -72,8 +72,8 @@ const userSchema = new mongoose.Schema({
     totalPrice: Number,
   },
 
-  Patientrefer: {
-    items: [
+  Patientsrefer: {
+    referedPatients: [
       {
         referalDetails: {
           PatientName: String,
@@ -90,15 +90,11 @@ const userSchema = new mongoose.Schema({
     ],
   },
 
-  ReferLeads: {
-    leadsrefered: [
+  Leadsrefer: {
+    referedLeads: [
       {
-        _leadid: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: Lead,
-        },
-
         leadDetails: {
+          _leadid: mongoose.Schema.Types.ObjectId,
           PatientName: String,
           PatientAge: Number,
           PatientGender: String,
@@ -188,11 +184,10 @@ userSchema.methods.addToCart = function (package) {
 };
 
 userSchema.methods.addLead = function (leaddata) {
-  let ReferLeads = this.ReferLeads;
-  ReferLeads.leadsrefered.push({
-    _leadid: leaddata._leadid,
-
+  let Leadsrefer = this.Leadsrefer;
+  Leadsrefer.referedLeads.push({
     leadDetails: {
+      _leadid: leaddata._leadid,
       PatientName: leaddata.PatientName,
       PatientAge: leaddata.PatientAge,
       PatientGender: leaddata.PatientGender,

@@ -37,6 +37,28 @@ router.get("/querypackagebypackageid", (req, res) => {
     });
 });
 
+router.get("/allpackages", (req, res) => {
+  Organization.find({}, "OrgPackages", function (err, result) {
+    if (err) {
+      res.json(err);
+    }
+
+    var final = [];
+    var finalobj = {};
+    for (var i = 0; i < result.length; i++) {
+      for (var j = 0; j < result[i].OrgPackages.length; j++) {
+        final.push(result[i].OrgPackages[j]);
+      }
+    }
+
+    for (var k = 0; k < final.length; k++) {
+      finalobj[k] = final[k];
+    }
+
+    res.json(finalobj);
+  });
+});
+
 router.delete("/deletepackage/:packageid", protect, async (req, res, next) => {
   Organization.findOneAndUpdate(
     { "OrgPackages._packageid": req.params.packageid },
@@ -45,6 +67,20 @@ router.delete("/deletepackage/:packageid", protect, async (req, res, next) => {
   )
     .then((data) => {
       res.json("package data of corresponding packageid deleted successfully");
+    })
+    .catch((err) => {
+      res.json({ err: err });
+    });
+});
+
+router.get("/querypackagenamedetail", (req, res) => {
+  Organization.find(
+    { "OrgPackages.PackageName": req.query.packagename },
+    { "OrgPackages.$": 1 }
+  )
+
+    .then((data) => {
+      res.json(data[0].OrgPackages[0]);
     })
     .catch((err) => {
       res.json({ err: err });

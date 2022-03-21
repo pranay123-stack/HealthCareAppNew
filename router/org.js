@@ -64,9 +64,9 @@ router.get("/getorgs", async (req, res, next) => {
   }
 });
 
-router.put("/addpackage/:orgid", protect, async (req, res, next) => {
+router.put("/addpackage", protect, async (req, res, next) => {
   const file = req.files.image;
-  const { orgid } = req.params;
+  const { orgid } = req.query;
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
     // console.log(result);
     var detail = {

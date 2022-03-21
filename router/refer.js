@@ -36,20 +36,21 @@ router.post("/leadsrefer/:leadid", protect, (req, res, next) => {
   Lead.find({ _leadid: _leadid })
     .then((leaddata) => {
       user.addLead(leaddata);
+      res.json("added");
     })
     .catch((err) => console.log(err));
-
-  res.json("added");
 
   next();
 });
 
 router.get("/patientsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
-  User.findById(_userid)
+  User.find({ _userid: _userid })
     .then((user) => {
-      var { Patientrefer } = user;
-      res.json({ referedetails: Patientrefer });
+      console.log(user);
+      var data = user.Patientrefer;
+
+      res.json({ PatientRefer: data });
     })
     .catch((err) => {
       console.error(err);
