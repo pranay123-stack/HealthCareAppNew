@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Organization = require("../models/OrganizatioSchema");
 const { protect } = require("../middleware/authMiddleware");
 
-router.put("/addbooking/:packageid", (req, res) => {
+router.put("/addbooking", (req, res) => {
   var detail = {
     _bookingid: new mongoose.Types.ObjectId(),
     PatientName: req.body.PatientName,
@@ -16,7 +16,7 @@ router.put("/addbooking/:packageid", (req, res) => {
   };
 
   Organization.updateOne(
-    { "OrgPackages._packageid": req.params.packageid },
+    { "OrgPackages._packageid": req.query.packageid },
     // { "OrgPackages.$": 1 },
     { $push: { "OrgPackages.$.PackageBookings": detail } },
 
@@ -31,9 +31,9 @@ router.put("/addbooking/:packageid", (req, res) => {
 });
 
 // list all bookings of a particular package
-router.get("/bookings/:packageid", (req, res) => {
+router.get("/bookings", (req, res) => {
   Organization.find(
-    { "OrgPackages._packageid": req.params.packageid },
+    { "OrgPackages._packageid": req.query.packageid },
     { "OrgPackages.$": 1 }
   )
 

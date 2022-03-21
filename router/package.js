@@ -28,9 +28,7 @@ router.get("/querypackagebypackageid", (req, res) => {
   )
 
     .then((data) => {
-      const newData = data[0];
-      const finalData = newData.OrgPackages[0];
-      res.json(finalData);
+      res.json(data[0].OrgPackages[0]);
     })
     .catch((err) => {
       res.json({ err: err });
@@ -89,22 +87,17 @@ router.get("/querypackagenamedetail", (req, res) => {
 
 // Update package Route
 router.put("/updatepackage/:packageid", (req, res) => {
-  var updates = req.body;
-  var options = { new: true };
-
   Organization.findOneAndUpdate(
     { "OrgPackages._packageid": req.params.packageid },
-
-    updates,
-    options,
-
-    function (err, result) {
-      if (err) {
-        return err;
-      }
-      res.json(result);
-    }
-  );
+    // { $set: { OrgPackages: req.body } },
+    { new: true }
+  )
+    .then((data) => {
+      res.json("package data of corresponding packageid updated successfully");
+    })
+    .catch((err) => {
+      res.json({ err: err });
+    });
 });
 
 module.exports = router;

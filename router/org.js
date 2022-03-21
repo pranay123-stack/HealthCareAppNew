@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 var Organization = require("../models/OrganizatioSchema");
-
-// const Package = require("../models/PackageSchema");
 const cloudinary = require("cloudinary").v2;
 const { protect } = require("../middleware/authMiddleware");
 
