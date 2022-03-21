@@ -31,9 +31,9 @@ router.post("/patientrefer", protect, (req, res) => {
 
 router.post("/leadsrefer/:leadid", protect, (req, res, next) => {
   let user = req.user;
-  const _leadid = req.params.leadid;
-  console.log(_leadid);
-  Lead.findById(_leadid)
+  var _leadid = req.params.leadid;
+
+  Lead.find({ _leadid: _leadid })
     .then((leaddata) => {
       user.addLead(leaddata);
     })
@@ -48,7 +48,8 @@ router.get("/patientsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
   User.findById(_userid)
     .then((user) => {
-      res.json({ referedetails: user.Patientrefer });
+      var { Patientrefer } = user;
+      res.json({ referedetails: Patientrefer });
     })
     .catch((err) => {
       console.error(err);
