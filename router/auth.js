@@ -113,11 +113,15 @@ router.get("/users", (req, res) => {
 
 router.put("/userupdate/:userid", async (req, res, next) => {
   try {
-    const _id = req.params.userid;
+    const _userid = req.params.userid;
     const updates = req.body;
     const options = { new: true };
 
-    const result = await User.findByIdAndUpdate(_id, updates, options);
+    const result = await User.findOneAndUpdate(
+      { _userid: _userid },
+      updates,
+      options
+    );
     res.status(200).json({ message: "user updated successfully", result });
 
     next();
@@ -127,15 +131,13 @@ router.put("/userupdate/:userid", async (req, res, next) => {
 });
 
 router.delete("/userdelete/:userid", async (req, res) => {
-  const _id = req.params.userid;
+  const _userid = req.params.userid;
   try {
-    const result = await User.findByIdAndDelete({ _id });
+    const result = await User.findOneAndDelete({ _userid: _userid });
     res.status(200).json({ message: "User deleted successfully", result });
     next();
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "user is not allowed to delete before authorized" });
+    res.status(500).json({ error: err });
   }
 });
 

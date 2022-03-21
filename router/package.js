@@ -87,13 +87,13 @@ router.get("/querypackagenamedetail", (req, res) => {
 
 // Update package Route
 router.put("/updatepackage/:packageid", (req, res) => {
-  Organization.findOneAndUpdate(
-    { "OrgPackages._packageid": req.params.packageid },
-    // { $set: { OrgPackages: req.body } },
-    { new: true }
+  Organization.find(
+    { "OrgPackages._packageid": req.query.packageid },
+    { "OrgPackages.$": 1 }
   )
+
     .then((data) => {
-      res.json("package data of corresponding packageid updated successfully");
+      res.json(data);
     })
     .catch((err) => {
       res.json({ err: err });
