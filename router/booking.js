@@ -17,7 +17,7 @@ router.put("/addbooking", (req, res) => {
 
   Organization.updateOne(
     { "OrgPackages._packageid": req.query.packageid },
-    // { "OrgPackages.$": 1 },
+
     { $push: { "OrgPackages.$.PackageBookings": detail } },
 
     function (err, result) {

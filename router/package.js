@@ -87,17 +87,50 @@ router.get("/querypackagenamedetail", (req, res) => {
 
 // Update package Route
 router.put("/updatepackage/:packageid", (req, res) => {
-  Organization.find(
-    { "OrgPackages._packageid": req.query.packageid },
-    { "OrgPackages.$": 1 }
-  )
+  Organization.updateOne(
+    { "OrgPackages._packageid": req.params.packageid },
+    {
+      $set: {
+        "OrgPackages.$.PackageName":
+          req.body.PackageName || "OrgPackages".PackageName,
 
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      res.json({ err: err });
-    });
+        "OrgPackages.$.PackageDescription":
+          req.body.PackageDescription || "OrgPackages".PackageDescription,
+
+        "OrgPackages.$.PackageType":
+          req.body.PackageType || "OrgPackages".PackageType,
+
+        "OrgPackages.$.Thumbnail":
+          req.body.Thumbnail || "OrgPackages".Thumbnail,
+
+        "OrgPackages.$.ActualPrice":
+          req.body.ActualPrice || "OrgPackages".ActualPrice,
+
+        "OrgPackages.$.PortalPrice":
+          req.body.PortalPrice || "OrgPackages".PortalPrice,
+
+        "OrgPackages.$.OfferPrice":
+          req.body.OfferPrice || "OrgPackages".OfferPrice,
+
+        "OrgPackages.$.MaxPrice": req.body.MaxPrice || "OrgPackages".MaxPrice,
+
+        "OrgPackages.$.Quantity": req.body.Quantity || "OrgPackages".Quantity,
+
+        "OrgPackages.$.PaymentOption":
+          req.body.PaymentOption || "OrgPackages".PaymentOption,
+
+        "OrgPackages.$.PackageStatus":
+          req.body.PackageStatus || "OrgPackages".PackageStatus,
+      },
+    },
+    (err, result) => {
+      if (err) {
+        res.status(500).json({ error: "Unable to update OrgPackages" });
+      } else {
+        res.status(200).json(result);
+      }
+    }
+  );
 });
 
 module.exports = router;
