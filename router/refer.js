@@ -42,11 +42,13 @@ router.post("/leadsrefer", protect, (req, res) => {
 router.get("/patientsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
   User.find({ _userid: _userid })
-    .then((user) => {
-      console.log(user);
-      var data = user.Patientrefer;
+    .then((userdata) => {
+      console.log(userdata);
+      var data = userdata[0];
+      var result = data.Patientsrefer;
+      // var result = data.Patientsrefer;
 
-      res.json({ PatientRefer: data });
+      res.json({ result });
     })
     .catch((err) => {
       console.error(err);
