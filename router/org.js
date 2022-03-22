@@ -62,6 +62,42 @@ router.get("/getorgs", async (req, res, next) => {
   }
 });
 
+router.put("/addpackagewithOrgType", (req, res) => {
+  const file = req.files.image;
+
+  cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
+    // console.log(result);
+    var detail = {
+      _packageid: new mongoose.Types.ObjectId(),
+      PackageName: req.body.PackageName,
+      PackageType: req.body.PackageType,
+      Thumbnail: req.body.Thumbnail,
+      PaymentOption: req.body.PaymentOption,
+      PackageStatus: req.body.PackageStatus,
+      OrgType: req.body.OrgType,
+      PackageDescription: req.body.PackageDescription,
+      image: result.url,
+      Quantity: req.body.Quantity,
+      ActualPrice: req.body.ActualPrice,
+      OfferPrice: req.body.OfferPrice,
+      PortalPrice: req.body.PortalPrice,
+      MaxPrice: req.body.MaxPrice,
+    };
+
+    Organization.updateOne(
+      { OrgType: req.body.OrgType },
+      { $push: { OrgPackages: detail } },
+
+      function (err, result) {
+        if (err) {
+          res.json(err);
+        } else {
+          res.json(result);
+        }
+      }
+    );
+  });
+});
 router.put("/addpackage", protect, async (req, res, next) => {
   const file = req.files.image;
   const { orgid } = req.query;
