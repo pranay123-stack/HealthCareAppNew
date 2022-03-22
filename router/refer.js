@@ -46,7 +46,6 @@ router.get("/patientsrefered/:userid", (req, res) => {
       console.log(userdata);
       var data = userdata[0];
       var result = data.Patientsrefer;
-      // var result = data.Patientsrefer;
 
       res.json({ result });
     })
