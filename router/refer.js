@@ -56,9 +56,11 @@ router.get("/patientsrefered/:userid", (req, res) => {
 
 router.get("/leadsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
-  User.findById(_userid)
-    .then((user) => {
-      res.json({ referedetails: user.Lead });
+  User.find({ _userid: _userid })
+    .then((userdata) => {
+      var data = userdata[0];
+      var result = data.Leadsrefer;
+      res.json({ result });
     })
     .catch((err) => {
       console.error(err);
