@@ -1,20 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const Organization = require("../models/OrganizatioSchema");
-// const Package = require("../models/PackageSchema");
+
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/addtocart/:packageid", protect, (req, res, next) => {
+router.post("/addtocart", protect, (req, res, next) => {
   let user = req.user;
-  const _packageid = req.params.packageid;
 
-  Organization.findById(_packageid)
-    .then((package) => {
-      user.addToCart(package);
+  Organization.find(
+    { "OrgPackages._packageid": req.query.packageid },
+    { "OrgPackages.$": 1 }
+  )
+    .then((data) => {
+      const cartdata = data[0].OrgPackages[0];
+      user.addToCart(cartdata);
     })
     .catch((err) => console.log(err));
-
-  res.json("added");
 
   next();
 });

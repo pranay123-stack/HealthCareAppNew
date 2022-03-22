@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const Lead = require("../models/LeadsSchema");
-
 const userSchema = new mongoose.Schema({
   _userid: { type: mongoose.Schema.Types.ObjectId },
   firstname: {
@@ -51,21 +49,12 @@ const userSchema = new mongoose.Schema({
   cart: {
     items: [
       {
-        packageId: {
-          type: mongoose.Schema.Types.ObjectId,
-          // ref: Package,
-          required: true,
-        },
-
+        _packageid: mongoose.Schema.Types.ObjectId,
         packageImage: String,
         packageName: String,
-        packageOrgName: String,
-        description: String,
 
-        qty: {
-          type: Number,
-          required: true,
-        },
+        description: String,
+        qty: Number,
       },
     ],
 
@@ -104,24 +93,6 @@ const userSchema = new mongoose.Schema({
       },
     ],
   },
-
-  wallet: {
-    walletitems: [
-      {
-        PatientReferWallet: {
-          PatientRefer: String,
-          PatientName: String,
-        },
-
-        PackageSaleWallet: {
-          PackageSale: String,
-          PatientName: String,
-        },
-      },
-    ],
-
-    WalletAmount: Number,
-  },
 });
 
 userSchema.pre("save", async function save(next) {
@@ -144,40 +115,40 @@ userSchema.methods.generateAuthToken = async function () {
   }
 };
 
-userSchema.methods.addToCart = function (package) {
+userSchema.methods.addToCart = function (cartdata) {
   let cart = this.cart;
   if (cart.items.length == 0) {
     cart.items.push({
-      packageId: package._id,
+      _packageid: cartdata._packageid,
       qty: 1,
-      packageImage: package.image,
-      packageName: package.PackageName,
-      packageOrgName: package.OrgName,
-      description: package.PackageDescription,
+      packageImage: cartdata.image,
+      packageName: cartdata.PackageName,
+
+      description: cartdata.PackageDescription,
     });
-    cart.totalPrice = Number(package.ActualPrice);
+    cart.totalPrice = Number(cartdata.ActualPrice);
   } else {
     const isExisting = cart.items.findIndex((objInItems) => {
       return (
         new String(objInItems.packageId).trim() ===
-        new String(package._id).trim()
+        new String(cartdata._packageid).trim()
       );
     });
     if (isExisting == -1) {
       cart.items.push({
-        packageId: package._id,
+        packageId: cartdata._id,
         qty: 1,
-        packageImage: package.image,
-        packageName: package.PackageName,
-        packageOrgName: package.OrgName,
-        description: package.PackageDescription,
+        packageImage: cartdata.image,
+        packageName: cartdata.PackageName,
+
+        description: cartdata.PackageDescription,
       });
-      cart.totalPrice += package.ActualPrice;
+      cart.totalPrice += cartdata.ActualPrice;
     } else {
       existingPackageInCart = cart.items[isExisting];
       existingPackageInCart.qty += 1;
     }
-    cart.totalPrice += package.ActualPrice;
+    cart.totalPrice += cartdata.ActualPrice;
   }
 
   return this.save();
@@ -199,20 +170,6 @@ userSchema.methods.addLead = function (leaddata) {
   return this.save();
 };
 
-userSchema.methods.addWallet = function (referdata) {
-  let wallet = this.wallet;
-  wallet.walletitems.push({
-    PatientReferWallet: {
-      PatientRefer: "date",
-      PatientName: "referdata.PatientName",
-    },
-
-    walletAmount: 500,
-  });
-
-  return this.save();
-};
-
 userSchema.methods.removeFromCart = function (cartdata) {
   const cart = this.cart;
   cartId = cartdata._id;
@@ -228,8 +185,8 @@ userSchema.methods.removeFromCart = function (cartdata) {
 };
 
 userSchema.methods.addPatientRefer = function (referalDetails) {
-  let Patientrefer = this.Patientrefer;
-  Patientrefer.items.push({
+  let Patientsrefer = this.Patientsrefer;
+  Patientsrefer.referedPatients.push({
     referalDetails: {
       PatientName: referalDetails.PatientName,
       PatientAge: referalDetails.PatientAge,

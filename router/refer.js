@@ -12,35 +12,31 @@ router.post("/patientrefer", protect, (req, res) => {
   user
     .addPatientRefer(referDetails)
     .then((doc) => {
-      var referdata = doc.Patientrefer;
-      user
-        .addWallet(referdata)
-        .then((wallet) => {
-          res.json("wallet added");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      res.json({ "added successfully": referDetails });
     })
     .catch((err) => {
-      console.log(err);
+      res.json(err);
     });
-
-  res.json("added successfully");
 });
 
-router.post("/leadsrefer/:leadid", protect, (req, res, next) => {
+router.post("/leadsrefer", protect, (req, res) => {
   let user = req.user;
-  var _leadid = req.params.leadid;
+  var _leadid = req.query.leadid;
 
   Lead.find({ _leadid: _leadid })
     .then((leaddata) => {
-      user.addLead(leaddata);
-      res.json("added");
+      user
+        .addLead(leaddata)
+        .then((doc) => {
+          res.json({ added: leaddata });
+        })
+        .catch((err) => {
+          res.json(err);
+        });
     })
-    .catch((err) => console.log(err));
-
-  next();
+    .catch((err) => {
+      res.json(err);
+    });
 });
 
 router.get("/patientsrefered/:userid", (req, res) => {
@@ -55,7 +51,6 @@ router.get("/patientsrefered/:userid", (req, res) => {
     .catch((err) => {
       console.error(err);
     });
-  // res.json({ message: "working" });
 });
 
 router.get("/leadsrefered/:userid", (req, res) => {
