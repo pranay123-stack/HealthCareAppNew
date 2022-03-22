@@ -102,7 +102,8 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/users", (req, res) => {
-  User.find()
+  User.find({}, { _id: 0, tokens: 0 })
+
     .then((user) => {
       res.json(user);
     })

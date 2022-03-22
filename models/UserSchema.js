@@ -2,98 +2,102 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const userSchema = new mongoose.Schema({
-  _userid: { type: mongoose.Schema.Types.ObjectId },
-  firstname: {
-    type: String,
-    required: true,
-  },
-  lastname: {
-    type: String,
-    required: true,
-  },
-  gender: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-  },
-
-  usertype: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: Number,
-    required: true,
-  },
-
-  password: {
-    type: String,
-    required: true,
-  },
-
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
-      },
+const userSchema = new mongoose.Schema(
+  {
+    _userid: { type: mongoose.Schema.Types.ObjectId },
+    firstname: {
+      type: String,
+      required: true,
     },
-  ],
+    lastname: {
+      type: String,
+      required: true,
+    },
+    gender: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+    },
 
-  cart: {
-    items: [
+    usertype: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: Number,
+      required: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+    },
+
+    tokens: [
       {
-        _packageid: mongoose.Schema.Types.ObjectId,
-        packageImage: String,
-        packageName: String,
-
-        description: String,
-        qty: Number,
-      },
-    ],
-
-    totalPrice: Number,
-  },
-
-  Patientsrefer: {
-    referedPatients: [
-      {
-        referalDetails: {
-          PatientName: String,
-          PatientAge: Number,
-          PatientGender: String,
-          PatientAttendentName: String,
-          PatientMobileNumber: Number,
-          OrganizationCategory: String,
-          HospitalName: String,
-          ServiceType: String,
-          Description: String,
+        token: {
+          type: String,
+          required: true,
         },
       },
     ],
-  },
 
-  Leadsrefer: {
-    referedLeads: [
-      {
-        leadDetails: {
-          _leadid: mongoose.Schema.Types.ObjectId,
-          PatientName: String,
-          PatientAge: Number,
-          PatientGender: String,
-          HospitalName: String,
-          PackageName: String,
+    cart: {
+      items: [
+        {
+          _packageid: mongoose.Schema.Types.ObjectId,
+          packageImage: String,
+          packageName: String,
+
+          description: String,
+          qty: Number,
         },
-      },
-    ],
+      ],
+
+      totalPrice: Number,
+    },
+
+    Patientsrefer: {
+      referedPatients: [
+        {
+          referalDetails: {
+            PatientName: String,
+            PatientAge: Number,
+            PatientGender: String,
+            PatientAttendentName: String,
+            PatientMobileNumber: Number,
+            OrganizationCategory: String,
+            HospitalName: String,
+            ServiceType: String,
+            Description: String,
+          },
+        },
+      ],
+    },
+
+    Leadsrefer: {
+      referedLeads: [
+        {
+          leadDetails: {
+            _leadid: mongoose.Schema.Types.ObjectId,
+            PatientName: String,
+            PatientAge: Number,
+            PatientGender: String,
+            HospitalName: String,
+            PackageName: String,
+          },
+        },
+      ],
+    },
   },
-});
+  { timestamps: true },
+  { versionKey: true }
+);
 
 userSchema.pre("save", async function save(next) {
   if (this.isModified("password")) {

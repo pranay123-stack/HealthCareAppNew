@@ -71,7 +71,7 @@ router.put("/addpackage/orgtype", (req, res) => {
       _packageid: new mongoose.Types.ObjectId(),
       PackageName: req.body.PackageName,
       PackageType: req.body.PackageType,
-      Thumbnail: req.body.Thumbnail,
+      Thumbnail: result.url,
       PaymentOption: req.body.PaymentOption,
       PackageStatus: req.body.PackageStatus,
       OrgType: req.body.OrgType,
