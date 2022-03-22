@@ -111,34 +111,35 @@ router.get("/users", (req, res) => {
     });
 });
 
-router.put("/userupdate/:userid", async (req, res, next) => {
-  try {
-    const _userid = req.params.userid;
-    const updates = req.body;
-    const options = { new: true };
+router.put("/userupdate/:userid", (req, res) => {
+  const _userid = req.params.userid;
+  const updates = req.body;
+  const options = { new: true };
 
-    const result = await User.findOneAndUpdate(
-      { _userid: _userid },
-      updates,
-      options
-    );
-    res.status(200).json({ message: "user updated successfully", result });
+  User.findOneAndUpdate(
+    { _userid: _userid },
+    updates,
+    options,
+    function (err, result) {
+      if (err) {
+        res.json(err);
+      }
 
-    next();
-  } catch (err) {
-    res.status(500).json({ error: err });
-  }
+      res.json({ "user updated successfully": result });
+    }
+  );
 });
 
-router.delete("/userdelete/:userid", async (req, res) => {
+router.delete("/userdelete/:userid", (req, res) => {
   const _userid = req.params.userid;
-  try {
-    const result = await User.findOneAndDelete({ _userid: _userid });
-    res.status(200).json({ message: "User deleted successfully", result });
-    next();
-  } catch (err) {
-    res.status(500).json({ error: err });
-  }
+
+  User.findOneAndDelete({ _userid: _userid }, function (err, result) {
+    if (err) {
+      return res.status(422).json({ error: err });
+    }
+
+    res.json({ "user deleted": result });
+  });
 });
 
 module.exports = router;
