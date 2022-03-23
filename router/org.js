@@ -62,11 +62,10 @@ router.get("/getorgs", async (req, res, next) => {
   }
 });
 
-router.put("/addpackage/orgtype", (req, res) => {
+router.put("/addpackageorgname", (req, res) => {
   const file = req.files.image;
 
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
-    // console.log(result);
     var detail = {
       _packageid: new mongoose.Types.ObjectId(),
       PackageName: req.body.PackageName,
@@ -85,7 +84,7 @@ router.put("/addpackage/orgtype", (req, res) => {
     };
 
     Organization.updateOne(
-      { OrgType: req.body.OrgType },
+      { OrgName: req.body.OrgName },
       { $push: { OrgPackages: detail } },
 
       function (err, result) {
