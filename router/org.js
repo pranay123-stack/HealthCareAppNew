@@ -107,7 +107,7 @@ router.put("/addpackage", protect, async (req, res, next) => {
       _packageid: new mongoose.Types.ObjectId(),
 
       PackageType: req.body.PackageType,
-      Thumbnail: req.body.Thumbnail,
+      Thumbnail: result.url,
       PaymentOption: req.body.PaymentOption,
       PackageStatus: req.body.PackageStatus,
 
