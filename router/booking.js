@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Organization = require("../models/OrganizatioSchema");
 const { protect } = require("../middleware/authMiddleware");
 
-router.put("/addbooking", (req, res) => {
+router.put("/addbooking", protect, (req, res) => {
   var detail = {
     _bookingid: new mongoose.Types.ObjectId(),
     PatientName: req.body.PatientName,
