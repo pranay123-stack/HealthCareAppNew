@@ -62,7 +62,7 @@ router.get("/getorgs", async (req, res, next) => {
   }
 });
 
-router.put("/addpackage", (req, res) => {
+router.put("/addpackage", protect, (req, res) => {
   const file = req.files.image;
 
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {

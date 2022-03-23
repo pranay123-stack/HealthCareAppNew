@@ -86,7 +86,7 @@ router.get("/querypackagenamedetail", (req, res) => {
 });
 
 // Update package Route
-router.put("/updatepackage/:packageid", (req, res) => {
+router.put("/updatepackage/:packageid", protect, (req, res) => {
   Organization.updateOne(
     { "OrgPackages._packageid": req.params.packageid },
     {
