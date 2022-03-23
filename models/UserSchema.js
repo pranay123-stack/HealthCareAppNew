@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
+    OrgName: {
+      type: String,
+    },
     usertype: {
       type: String,
       required: true,

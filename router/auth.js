@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
-
 const User = require("../models/UserSchema");
 
 router.post("/register", async (req, res) => {
@@ -14,6 +12,7 @@ router.post("/register", async (req, res) => {
     !req.body.email ||
     !req.body.usertype ||
     !req.body.phone ||
+    !req.body.OrgName ||
     !req.body.password
   ) {
     return res.status(422).json({ error: "Please filled the fields properly" });
@@ -35,17 +34,19 @@ router.post("/register", async (req, res) => {
       usertype: req.body.usertype,
       phone: req.body.phone,
       password: req.body.password,
+      OrgName: req.body.OrgName,
     });
     await user.save();
     res.status(201).json({
-      _userid: user._userid,
       message: "user registered successfully",
+      _userid: user._userid,
       firstname: user.firstname,
       lastname: user.lastname,
       gender: user.gender,
       email: user.email,
       usertype: user.usertype,
       phone: user.phone,
+      OrgName: user.OrgName,
     });
   } catch (err) {
     console.log(err);

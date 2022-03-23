@@ -52,7 +52,7 @@ router.post("/addleads", protect, async (req, res) => {
 });
 
 router.get("/getleads", (req, res) => {
-  Lead.find()
+  Lead.find({}, { _id: 0 })
     .exec()
     .then((docs) => {
       console.log(docs);
@@ -97,7 +97,7 @@ router.put("/updatelead/:leadid", protect, async (req, res, next) => {
 });
 
 router.get("/getlead/:leadid", (req, res) => {
-  Lead.find({ _leadid: req.params.leadid })
+  Lead.find({ _leadid: req.params.leadid }, { _id: 0 })
     .then((lead) => {
       res.status(200).json(lead);
     })
@@ -109,11 +109,10 @@ router.get("/getlead/:leadid", (req, res) => {
 router.get("/getcreatedleadsbyuserid/:userid", async (req, res, next) => {
   var createdLeadsarray = [];
 
-  var finalResults = await mongoose.connection
+  var leadResults = await mongoose.connection
     .collection("leads")
-    .find({
-      _userid: req.params.userid,
-    })
+    .find({ _userid: req.params.userid })
+
     .toArray();
 
   for (let i = 0; i < leadResults.length; i++) {

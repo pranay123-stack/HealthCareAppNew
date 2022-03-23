@@ -54,7 +54,7 @@ router.post("/addorg", protect, (req, res, next) => {
 
 router.get("/getorgs", async (req, res, next) => {
   try {
-    const results = await Organization.find();
+    const results = await Organization.find({}, { _id: 0 });
     res.status(200).json({ results });
     next();
   } catch (err) {
@@ -138,7 +138,7 @@ router.put("/addpackage", protect, async (req, res, next) => {
 
 router.get("/getorg/:orgid", function (req, res) {
   const id = req.params.orgid;
-  Organization.find({ _orgid: id })
+  Organization.find({ _orgid: id }, { _id: 0 })
 
     .then(function (dbOrg) {
       res.json(dbOrg);
@@ -151,7 +151,7 @@ router.get("/getorg/:orgid", function (req, res) {
 router.get("/orgquerybyorgid", (req, res) => {
   const _id = req.query.orgid;
 
-  Organization.find({ _orgid: _id })
+  Organization.find({ _orgid: _id }, { _id: 0 })
     .exec()
     .then((doc) => {
       console.log("From database", doc);
@@ -195,9 +195,12 @@ router.get("/getorgs/data/categorywise", async (req, res, next) => {
 
     var hospitalResult = await mongoose.connection
       .collection("organizations")
-      .find({
-        OrgType: "HOSPITAL",
-      })
+      .find(
+        {
+          OrgType: "HOSPITAL",
+        },
+        { _id: 0 }
+      )
       .toArray();
 
     for (let i = 0; i < hospitalResult.length; i++) {
