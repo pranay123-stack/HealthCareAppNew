@@ -13,7 +13,8 @@ router.post("/addtocart", protect, (req, res, next) => {
   )
     .then((data) => {
       const cartdata = data[0].OrgPackages[0];
-      user.addToCart(cartdata);
+      // user.addToCart(cartdata);
+      res.json(cartdata);
     })
     .catch((err) => console.log(err));
 

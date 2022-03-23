@@ -62,7 +62,7 @@ router.get("/getorgs", async (req, res, next) => {
   }
 });
 
-router.put("/addpackageorgname", (req, res) => {
+router.put("/addpackage", (req, res) => {
   const file = req.files.image;
 
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
@@ -97,7 +97,7 @@ router.put("/addpackageorgname", (req, res) => {
     );
   });
 });
-router.put("/addpackage", protect, async (req, res, next) => {
+router.put("/addpackagewithorgid", protect, async (req, res, next) => {
   const file = req.files.image;
   const { orgid } = req.query;
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
