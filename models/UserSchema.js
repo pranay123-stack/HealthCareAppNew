@@ -56,8 +56,7 @@ const userSchema = new mongoose.Schema(
           _packageid: mongoose.Schema.Types.ObjectId,
           packageImage: String,
           packageName: String,
-
-          description: String,
+          packagedescription: String,
           qty: Number,
         },
       ],
@@ -130,25 +129,23 @@ userSchema.methods.addToCart = function (cartdata) {
       qty: 1,
       packageImage: cartdata.image,
       packageName: cartdata.PackageName,
-
-      description: cartdata.PackageDescription,
+      packagedescription: cartdata.PackageDescription,
     });
     cart.totalPrice = Number(cartdata.ActualPrice);
   } else {
     const isExisting = cart.items.findIndex((objInItems) => {
       return (
-        new String(objInItems.packageId).trim() ===
+        new String(objInItems._packageid).trim() ===
         new String(cartdata._packageid).trim()
       );
     });
     if (isExisting == -1) {
       cart.items.push({
-        packageId: cartdata._id,
+        _packageid: cartdata._packageid,
         qty: 1,
         packageImage: cartdata.image,
         packageName: cartdata.PackageName,
-
-        description: cartdata.PackageDescription,
+        packagedescription: cartdata.PackageDescription,
       });
       cart.totalPrice += cartdata.ActualPrice;
     } else {
@@ -159,6 +156,18 @@ userSchema.methods.addToCart = function (cartdata) {
   }
 
   return this.save();
+};
+
+userSchema.methods.removeFromCart = function (_packageid) {
+  let cart = this.cart;
+  const isExisting = cart.items.findIndex(
+    (objInItems) =>
+      new String(objInItems._packageid).trim() === new String(_packageid).trim()
+  );
+  if (isExisting >= 0) {
+    cart.items.splice(isExisting, 1);
+    return this.save();
+  }
 };
 
 userSchema.methods.addLead = function (leaddata) {
@@ -175,20 +184,6 @@ userSchema.methods.addLead = function (leaddata) {
   });
 
   return this.save();
-};
-
-userSchema.methods.removeFromCart = function (cartdata) {
-  const cart = this.cart;
-  cartId = cartdata._id;
-  const isExisting = cart.items.findIndex(
-    (objInItems) =>
-      new String(objInItems.cartId).trim() === new String(cartId).trim()
-  );
-
-  if (isExisting >= 0) {
-    cart.items.splice(isExisting, 1);
-    return this.save();
-  }
 };
 
 userSchema.methods.addPatientRefer = function (referalDetails) {

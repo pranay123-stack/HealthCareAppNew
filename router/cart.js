@@ -4,7 +4,7 @@ const Organization = require("../models/OrganizatioSchema");
 
 const { protect } = require("../middleware/authMiddleware");
 
-router.post("/addtocart", protect, (req, res, next) => {
+router.post("/addcart", protect, (req, res) => {
   let user = req.user;
 
   Organization.find(
@@ -13,21 +13,19 @@ router.post("/addtocart", protect, (req, res, next) => {
   )
     .then((data) => {
       const cartdata = data[0].OrgPackages[0];
-      // user.addToCart(cartdata);
-      res.json(cartdata);
+      user.addToCart(cartdata);
     })
     .catch((err) => console.log(err));
 
-  next();
+  res.json("added");
 });
 
 router.get("/getcart", protect, (req, res) => {
   let user = req.user;
   user
-    .populate("cart.items.packageId")
+    .populate("cart.items._packageid")
 
     .then((user) => {
-      console.log(user);
       res.json({ cart: user.cart });
     })
     .catch((err) => {
@@ -35,20 +33,17 @@ router.get("/getcart", protect, (req, res) => {
     });
 });
 
-router.delete("/deletecart", protect, (req, res) => {
+router.delete("/deleteIncart", protect, (req, res) => {
   let user = req.user;
-  const { cartid } = req.query;
-  const { cart } = user;
-  cart
-    .findById(cartid)
-    .then((cartdata) => {
-      user.removeFromCart(cartdata);
+  var _packageid = req.query.packageid;
+  user
+    .removeFromCart(_packageid)
+    .then(() => {
+      res.json({ removed: _packageid });
     })
     .catch((err) => {
       res.json(err);
     });
-
-  res.json("deleted cart");
 });
 
 module.exports = router;
