@@ -77,11 +77,10 @@ router.post("/login", async (req, res) => {
       } else {
         res.status(200).json({
           message: "user sign in successfully",
-
-          status: "true",
+          loginstatus: "true",
 
           _userid: userLogin._userid,
-
+          OrgName: userLogin.OrgName,
           firstname: userLogin.firstname,
           lastname: userLogin.lastname,
           gender: userLogin.gender,
@@ -94,7 +93,7 @@ router.post("/login", async (req, res) => {
     } else {
       res.status(400).json({
         message: "Invalid credentials",
-        status: "false",
+        loginstatus: "false",
       });
     }
   } catch (err) {
