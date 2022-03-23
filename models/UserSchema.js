@@ -5,18 +5,22 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema(
   {
     _userid: { type: mongoose.Schema.Types.ObjectId },
+
     firstname: {
       type: String,
       required: true,
     },
+
     lastname: {
       type: String,
       required: true,
     },
+
     gender: {
       type: String,
       required: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -24,13 +28,11 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    OrgName: {
-      type: String,
-    },
     usertype: {
       type: String,
       required: true,
     },
+
     phone: {
       type: Number,
       required: true,
@@ -41,14 +43,9 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    OrgName: {
+      type: String,
+    },
 
     cart: {
       items: [
@@ -96,6 +93,15 @@ const userSchema = new mongoose.Schema(
         },
       ],
     },
+
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true },
   { versionKey: true }
@@ -204,6 +210,7 @@ userSchema.methods.addPatientRefer = function (referalDetails) {
 
   return this.save();
 };
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

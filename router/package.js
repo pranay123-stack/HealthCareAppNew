@@ -1,4 +1,3 @@
-// Creating a package
 const express = require("express");
 const router = express.Router();
 const Organization = require("../models/OrganizatioSchema");
@@ -85,7 +84,6 @@ router.get("/querypackagenamedetail", (req, res) => {
     });
 });
 
-// Update package Route
 router.put("/updatepackage/:packageid", protect, (req, res) => {
   Organization.updateOne(
     { "OrgPackages._packageid": req.params.packageid },

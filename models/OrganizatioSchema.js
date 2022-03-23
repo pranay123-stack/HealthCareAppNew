@@ -7,22 +7,27 @@ var bookings = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   PatientAge: {
     type: String,
     required: true,
   },
+
   PatientGender: {
     type: String,
     required: true,
   },
+
   AttendentName: {
     type: String,
     required: true,
   },
+
   MobileNumber: {
     type: Number,
     required: true,
   },
+
   SellingPrice: {
     type: Number,
     required: true,
@@ -32,12 +37,12 @@ var bookings = new mongoose.Schema({
 var packages = new mongoose.Schema({
   _packageid: { type: mongoose.Schema.Types.ObjectId },
 
+  PackageBookings: [bookings],
+
   PackageName: {
     type: String,
     required: true,
   },
-
-  PackageBookings: [bookings],
 
   PackageType: {
     type: String,
@@ -65,10 +70,12 @@ var packages = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
   PortalPrice: {
     type: Number,
     required: true,
   },
+
   OfferPrice: {
     type: Number,
     required: true,
@@ -120,22 +127,27 @@ const OrganizationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     OrgAddress: {
       type: String,
       required: true,
     },
+
     OrgLocation: {
       type: String,
       required: true,
     },
+
     OrgCity: {
       type: String,
       required: true,
     },
+
     State: {
       type: String,
       required: true,
     },
+
     Country: {
       type: String,
       required: true,

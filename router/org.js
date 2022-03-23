@@ -97,6 +97,7 @@ router.put("/addpackage", protect, (req, res) => {
     );
   });
 });
+
 router.put("/addpackagewithorgid", protect, async (req, res, next) => {
   const file = req.files.image;
   const { orgid } = req.query;
@@ -290,7 +291,6 @@ router.delete("/deleteorg/:orgid", protect, async (req, res, next) => {
   }
 });
 
-// Update Organization
 router.put("/updateorg/:orgid", protect, async (req, res, next) => {
   try {
     const _id = req.params.orgid;

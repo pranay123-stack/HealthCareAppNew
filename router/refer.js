@@ -65,7 +65,6 @@ router.get("/leadsrefered/:userid", (req, res) => {
     .catch((err) => {
       console.error(err);
     });
-  // res.json({ message: "working" });
 });
 
 module.exports = router;

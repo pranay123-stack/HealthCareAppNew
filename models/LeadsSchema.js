@@ -4,32 +4,33 @@ const LeadSchema = new mongoose.Schema(
   {
     _leadid: { type: mongoose.Schema.Types.ObjectId },
 
+    _userid: { type: String, ref: "User" },
+
     PatientName: {
       type: String,
       required: true,
     },
+
     PatientAge: {
       type: Number,
       required: true,
     },
 
-    _userid: {
-      type: String,
-      ref: "User",
-    },
     PatientGender: {
       type: String,
       enum: ["male", "female", "other"],
       required: true,
     },
+
     PatientDetails: {
       type: String,
       required: true,
     },
 
-    HospitalName: {
+    OrgName: {
       type: String,
       required: true,
+      ref: "Organization",
     },
 
     PackageName: {

@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Lead = require("../models/LeadsSchema");
-const User = require("../models/UserSchema");
-
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/addleads", protect, async (req, res) => {
@@ -11,7 +9,7 @@ router.post("/addleads", protect, async (req, res) => {
     var authuser = req.user;
 
     const {
-      HospitalName,
+      OrgName,
       PackageName,
       PatientName,
       PatientAge,
@@ -27,7 +25,7 @@ router.post("/addleads", protect, async (req, res) => {
     const data = new Lead({
       _leadid: new mongoose.Types.ObjectId(),
       _userid: authuser._userid,
-      HospitalName,
+      OrgName,
       PackageName,
       PatientName,
       PatientAge,
@@ -112,6 +110,25 @@ router.get("/getcreatedleadsbyuserid/:userid", async (req, res, next) => {
   var leadResults = await mongoose.connection
     .collection("leads")
     .find({ _userid: req.params.userid })
+
+    .toArray();
+
+  for (let i = 0; i < leadResults.length; i++) {
+    let a = leadResults[i];
+    createdLeadsarray.push(a);
+  }
+
+  return res.json({ createdLeadsarray });
+
+  next();
+});
+
+router.get("/getcreatedleadsoforgname/:OrgName", async (req, res) => {
+  var createdLeadsarray = [];
+
+  var leadResults = await mongoose.connection
+    .collection("leads")
+    .find({ OrgName: req.params.OrgName })
 
     .toArray();
 
