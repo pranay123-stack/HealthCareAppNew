@@ -53,7 +53,7 @@ router.get("/allpackages", (req, res) => {
       finalobj[k] = final[k];
     }
 
-    res.json(result);
+    res.json(finalobj);
   });
 });
 
