@@ -146,7 +146,7 @@ router.delete("/userdelete/:userid", (req, res) => {
 router.get("/getuser/:userid", (req, res) => {
   User.find({ _userid: req.params.userid }, { _id: 0 })
     .then((user) => {
-      res.status(200).json(user);
+      res.status(200).json({ result: user });
     })
     .catch((err) => {
       res.status(400).json({ error: err });
