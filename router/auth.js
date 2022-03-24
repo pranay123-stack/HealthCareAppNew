@@ -105,7 +105,7 @@ router.get("/users", (req, res) => {
   User.find({}, { _id: 0, tokens: 0 })
 
     .then((users) => {
-      res.json({ results: [users] });
+      res.json({ results: users });
     })
     .catch((err) => {
       res.json(err);

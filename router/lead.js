@@ -53,7 +53,7 @@ router.get("/getleads", (req, res) => {
   Lead.find({}, { _id: 0 })
     .exec()
     .then((leads) => {
-      res.status(200).json({ results: [leads] });
+      res.status(200).json({ results: leads });
     })
     .catch((err) => {
       res.status(500).json({ error: err });
