@@ -52,11 +52,11 @@ router.post("/addleads", protect, async (req, res) => {
 router.get("/getleads", (req, res) => {
   Lead.find({}, { _id: 0 })
     .exec()
-    .then((docs) => {
+    .then((leads) => {
       console.log(docs);
       // if(docs.length > 0){
       res.status(200).json({
-        docs,
+        result: [leads],
       });
       // }else{
       //     res.status(400).json({message:'No entries found'})

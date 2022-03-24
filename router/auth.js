@@ -104,8 +104,8 @@ router.post("/login", async (req, res) => {
 router.get("/users", (req, res) => {
   User.find({}, { _id: 0, tokens: 0 })
 
-    .then((user) => {
-      res.json(user);
+    .then((users) => {
+      res.json({ results: [users] });
     })
     .catch((err) => {
       res.json(err);
