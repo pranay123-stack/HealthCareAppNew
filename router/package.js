@@ -7,15 +7,17 @@ router.get("/querypackagebyOrgName", (req, res) => {
   const { OrgName } = req.query;
   Organization.find({ OrgName: OrgName }, "OrgPackages")
     .exec()
-    .then((docs) => {
-      console.log(docs);
-
-      res.status(200).json({
-        docs,
-      });
+    .then((packages) => {
+      if (packages.length > 0) {
+        var result = packages[0].OrgPackages;
+        res.status(200).json({
+          result,
+        });
+      } else {
+        res.status(400).json("no packages found for given OrgName");
+      }
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json({ error: err });
     });
 });
@@ -25,12 +27,17 @@ router.get("/querypackagebypackageid", (req, res) => {
     { "OrgPackages._packageid": req.query.packageid },
     { "OrgPackages.$": 1 }
   )
-
-    .then((data) => {
-      res.json(data[0].OrgPackages[0]);
+    .exec()
+    .then((package) => {
+      if (package) {
+        var result = package[0].OrgPackages[0];
+        res.status(200).json({ result: result });
+      } else {
+        res.status(400).json("no package found for given packageid");
+      }
     })
     .catch((err) => {
-      res.json({ err: err });
+      res.status(500).json({ error: err });
     });
 });
 
@@ -40,19 +47,23 @@ router.get("/allpackages", (req, res) => {
       res.json(err);
     }
 
-    var final = [];
-    var finalobj = {};
-    for (var i = 0; i < result.length; i++) {
-      for (var j = 0; j < result[i].OrgPackages.length; j++) {
-        final.push(result[i].OrgPackages[j]);
+    if (result.length > 0) {
+      var final = [];
+      var finalobj = {};
+      for (var i = 0; i < result.length; i++) {
+        for (var j = 0; j < result[i].OrgPackages.length; j++) {
+          final.push(result[i].OrgPackages[j]);
+        }
       }
-    }
 
-    for (var k = 0; k < final.length; k++) {
-      finalobj[k] = final[k];
-    }
+      for (var k = 0; k < final.length; k++) {
+        finalobj[k] = final[k];
+      }
 
-    res.json({ results: final });
+      res.status(200).json({ results: final });
+    } else {
+      res.status(400).json("no packages avaialble");
+    }
   });
 });
 
@@ -63,10 +74,13 @@ router.delete("/deletepackage/:packageid", protect, async (req, res, next) => {
     { new: true }
   )
     .then((data) => {
-      res.json("package data of corresponding packageid deleted successfully");
+      res.status(200).json({
+        message: "package data of corresponding packageid deleted successfully",
+        result: data,
+      });
     })
     .catch((err) => {
-      res.json({ err: err });
+      res.status(500).json({ error: err });
     });
 });
 
@@ -75,12 +89,18 @@ router.get("/querypackagenamedetail", (req, res) => {
     { "OrgPackages.PackageName": req.query.packagename },
     { "OrgPackages.$": 1 }
   )
+    .exec()
 
-    .then((data) => {
-      res.json(data[0].OrgPackages[0]);
+    .then((package) => {
+      if (!package) {
+        res.status(400).json("no package found for given package name");
+      } else {
+        var result = package[0].OrgPackages[0];
+        res.status(200).json({ result: result });
+      }
     })
     .catch((err) => {
-      res.json({ err: err });
+      res.status(500).json({ err: err });
     });
 });
 
@@ -123,9 +143,10 @@ router.put("/updatepackage/:packageid", protect, (req, res) => {
     },
     (err, result) => {
       if (err) {
-        res.status(500).json({ error: "Unable to update OrgPackages" });
+        res.status(500).json({ error: err });
       } else {
-        res.status(200).json(result);
+        var result = req.body;
+        res.status(200).json({ message: "updated successfully", result });
       }
     }
   );

@@ -37,7 +37,7 @@ router.post("/register", async (req, res) => {
       OrgName: req.body.OrgName,
     });
     await user.save();
-    res.status(201).json({
+    res.status(200).json({
       message: "user registered successfully",
       _userid: user._userid,
       firstname: user.firstname,
@@ -49,7 +49,7 @@ router.post("/register", async (req, res) => {
       OrgName: user.OrgName,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({ error: err });
   }
 });
 
@@ -92,12 +92,12 @@ router.post("/login", async (req, res) => {
       }
     } else {
       res.status(400).json({
-        message: "Invalid credentials",
+        error: "Invalid credentials",
         loginstatus: "false",
       });
     }
   } catch (err) {
-    console.log(err);
+    res.status(500).json({ error: err });
   }
 });
 
@@ -105,10 +105,10 @@ router.get("/users", (req, res) => {
   User.find({}, { _id: 0, tokens: 0 })
 
     .then((users) => {
-      res.json({ results: users });
+      res.status(200).json({ results: users });
     })
     .catch((err) => {
-      res.json(err);
+      res.status(500).json({ error: err });
     });
 });
 
@@ -123,10 +123,10 @@ router.put("/userupdate/:userid", (req, res) => {
     options,
     function (err, result) {
       if (err) {
-        res.json(err);
+        res.status(500).json({ error: err });
       }
 
-      res.json({ "user updated successfully": result });
+      res.status(200).json({ message: "updated successfully", result });
     }
   );
 });
@@ -136,10 +136,10 @@ router.delete("/userdelete/:userid", (req, res) => {
 
   User.findOneAndDelete({ _userid: _userid }, function (err, result) {
     if (err) {
-      return res.status(422).json({ error: err });
+      return res.status(500).json({ error: err });
     }
 
-    res.json({ "user deleted": result });
+    res.status(200).json({ message: "user deleted successfully" });
   });
 });
 
@@ -147,10 +147,10 @@ router.get("/getuser/:userid", (req, res) => {
   User.find({ _userid: req.params.userid }, { _id: 0, tokens: 0 })
     .then((user) => {
       const result = user[0];
-      res.status(200).json(result);
+      res.status(200).json({ result: result });
     })
     .catch((err) => {
-      res.status(400).json({ error: err });
+      res.status(500).json({ error: err });
     });
 });
 

@@ -15,8 +15,6 @@ router.post("/addorg", protect, (req, res, next) => {
   const file = req.files.image;
   cloudinary.uploader
     .upload(file.tempFilePath, (err, result) => {
-      console.log(result);
-
       organization = new Organization({
         _orgid: new mongoose.Types.ObjectId(),
         OrgName: req.body.OrgName,
@@ -40,10 +38,10 @@ router.post("/addorg", protect, (req, res, next) => {
       organization
         .save()
 
-        .then((result) => {
+        .then((org) => {
           res.status(201).json({
             message: "Organization added successfully",
-            createdOrg: result,
+            createdOrg: org,
           });
         });
     })
@@ -58,7 +56,7 @@ router.get("/getorgs", async (req, res, next) => {
     res.status(200).json({ results });
     next();
   } catch (err) {
-    res.send(err);
+    res.status(500).json({ error: err });
   }
 });
 
@@ -91,7 +89,10 @@ router.put("/addpackage", protect, (req, res) => {
         if (err) {
           res.json(err);
         } else {
-          res.json(result);
+          res.json({
+            message: "Package added successfully",
+            createdPackage: detail,
+          });
         }
       }
     );
@@ -102,7 +103,6 @@ router.put("/addpackagewithorgid", protect, async (req, res, next) => {
   const file = req.files.image;
   const { orgid } = req.query;
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
-    // console.log(result);
     var detail = {
       _packageid: new mongoose.Types.ObjectId(),
 
@@ -127,9 +127,12 @@ router.put("/addpackagewithorgid", protect, async (req, res, next) => {
 
       function (err, result) {
         if (err) {
-          res.json(err);
+          res.status(500).json({ error: err });
         } else {
-          res.json(result);
+          res.status(200).json({
+            message: "Package added successfully",
+            createdPackage: detail,
+          });
         }
       }
     );
@@ -140,11 +143,15 @@ router.get("/getorg/:orgid", function (req, res) {
   const id = req.params.orgid;
   Organization.find({ _orgid: id }, { _id: 0 })
 
-    .then(function (dbOrg) {
-      res.json(dbOrg);
+    .then(function (org) {
+      if (org) {
+        res.status(200).json({ result: org });
+      } else {
+        res.status(400).json({ message: "no organization found" });
+      }
     })
     .catch(function (err) {
-      res.json(err);
+      res.status(500).json({ error: err });
     });
 });
 
@@ -153,11 +160,10 @@ router.get("/orgquerybyorgid", (req, res) => {
 
   Organization.find({ _orgid: _id }, { _id: 0 })
     .exec()
-    .then((doc) => {
-      console.log("From database", doc);
-      if (doc) {
+    .then((org) => {
+      if (org) {
         res.status(200).json({
-          doc,
+          result: org,
         });
       } else {
         res
@@ -166,7 +172,6 @@ router.get("/orgquerybyorgid", (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json({ error: err });
     });
 });
@@ -176,15 +181,16 @@ router.get("/orgquerybyOrgType", async (req, res) => {
 
   Organization.find({ OrgType: OrgType }, {})
     .exec()
-    .then((docs) => {
-      console.log(docs);
-
-      res.status(200).json({
-        docs,
-      });
+    .then((orgs) => {
+      if (orgs.length == 0) {
+        res.status(400).json("no orgs found for given OrgType");
+      } else {
+        res.status(200).json({
+          result: orgs,
+        });
+      }
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json({ error: err });
     });
 });
@@ -285,9 +291,7 @@ router.delete("/deleteorg/:orgid", protect, async (req, res, next) => {
     res.status(200).json({ message: "Deleted successfully", result });
     next();
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "user is not allowed to delete before authorized" });
+    res.status(500).json({ error: err });
   }
 });
 
@@ -307,9 +311,7 @@ router.put("/updateorg/:orgid", protect, async (req, res, next) => {
 
     next();
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: "user is not allowed to update before authorized" });
+    res.status(500).json({ error: err });
   }
 });
 
