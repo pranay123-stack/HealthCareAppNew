@@ -83,7 +83,6 @@ const userSchema = new mongoose.Schema(
       referedLeads: [
         {
           leadDetails: {
-            _leadid: mongoose.Schema.Types.ObjectId,
             PatientName: String,
             PatientAge: Number,
             PatientGender: String,
@@ -92,6 +91,51 @@ const userSchema = new mongoose.Schema(
           },
         },
       ],
+    },
+
+    wallet: {
+      PaymentHistory: {
+        PatientsRefered: [
+          {
+            PatientDetails: {
+              // details of patient
+            },
+
+            PatientReferEarnedAmount: {
+              type: Number,
+            },
+          },
+        ],
+
+        PackagesSold: [
+          {
+            PackageDetails: {
+              // package details
+            },
+
+            PackageSaleEarnedAmount: {
+              type: Number,
+            },
+          },
+        ],
+
+        LeadsRefered: [
+          {
+            LeadDetails: {
+              // details of lead
+            },
+
+            LeadReferEarnedAmount: {
+              type: Number,
+            },
+          },
+        ],
+      },
+
+      AvailableBalance: {
+        // total of  PackageSaleEarnedAmount +   PatientReferEarnedAmount + LeadsreferEarned
+        type: Number,
+      },
     },
 
     tokens: [
@@ -180,7 +224,6 @@ userSchema.methods.addLead = function (leaddata) {
   let Leadsrefer = this.Leadsrefer;
   Leadsrefer.referedLeads.push({
     leadDetails: {
-      _leadid: leaddata._leadid,
       PatientName: leaddata.PatientName,
       PatientAge: leaddata.PatientAge,
       PatientGender: leaddata.PatientGender,

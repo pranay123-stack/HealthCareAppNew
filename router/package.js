@@ -52,7 +52,7 @@ router.get("/allpackages", (req, res) => {
       finalobj[k] = final[k];
     }
 
-    res.json(finalobj);
+    res.json({ results: [finalobj] });
   });
 });
 
@@ -130,5 +130,8 @@ router.put("/updatepackage/:packageid", protect, (req, res) => {
     }
   );
 });
+
+// api when the package is sold and to update the amount in wallet
+// if a payment is done then return the details to update in user package sale in wallet
 
 module.exports = router;

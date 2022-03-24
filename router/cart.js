@@ -45,4 +45,6 @@ router.delete("/deleteIncart", protect, (req, res) => {
     });
 });
 
+// checkout razorpay payment gateway
+
 module.exports = router;
