@@ -53,14 +53,7 @@ router.get("/getleads", (req, res) => {
   Lead.find({}, { _id: 0 })
     .exec()
     .then((leads) => {
-      console.log(docs);
-      // if(docs.length > 0){
-      res.status(200).json({
-        result: [leads],
-      });
-      // }else{
-      //     res.status(400).json({message:'No entries found'})
-      // }
+      res.status(200).json({ results: [leads] });
     })
     .catch((err) => {
       res.status(500).json({ error: err });
