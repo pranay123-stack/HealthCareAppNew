@@ -37,6 +37,8 @@ var bookings = new mongoose.Schema({
 var packages = new mongoose.Schema({
   _packageid: { type: mongoose.Schema.Types.ObjectId },
 
+  OrgName: { type: String, required: true, ref: "Organization" },
+
   PackageBookings: [bookings],
 
   PackageName: {

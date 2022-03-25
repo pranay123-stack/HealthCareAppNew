@@ -10,6 +10,7 @@ router.get("/querypackagebyOrgName", (req, res) => {
     .then((packages) => {
       if (packages.length > 0) {
         var result = packages[0].OrgPackages;
+
         res.status(200).json({
           result,
         });

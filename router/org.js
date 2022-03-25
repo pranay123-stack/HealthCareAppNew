@@ -66,6 +66,7 @@ router.put("/addpackage", protect, (req, res) => {
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
     var detail = {
       _packageid: new mongoose.Types.ObjectId(),
+      OrgName: req.body.OrgName,
       PackageName: req.body.PackageName,
       PackageType: req.body.PackageType,
       Thumbnail: result.url,
@@ -89,6 +90,7 @@ router.put("/addpackage", protect, (req, res) => {
         if (err) {
           res.json(err);
         } else {
+          detail["OrgName"] = req.body.OrgName;
           res.json({
             message: "Package added successfully",
             createdPackage: detail,
@@ -110,7 +112,7 @@ router.put("/addpackagewithorgid", protect, async (req, res, next) => {
       Thumbnail: result.url,
       PaymentOption: req.body.PaymentOption,
       PackageStatus: req.body.PackageStatus,
-
+      OrgName: req.body.OrgName,
       PackageName: req.body.PackageName,
       PackageDescription: req.body.PackageDescription,
       image: result.url,
@@ -129,6 +131,7 @@ router.put("/addpackagewithorgid", protect, async (req, res, next) => {
         if (err) {
           res.status(500).json({ error: err });
         } else {
+          detail["OrgName"] = req.body.OrgName;
           res.status(200).json({
             message: "Package added successfully",
             createdPackage: detail,
