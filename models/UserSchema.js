@@ -54,6 +54,7 @@ const userSchema = new mongoose.Schema(
           packageImage: String,
           packageName: String,
           packagedescription: String,
+          ActualPrice: String,
           qty: Number,
         },
       ],
@@ -180,6 +181,7 @@ userSchema.methods.addToCart = function (cartdata) {
       packageImage: cartdata.image,
       packageName: cartdata.PackageName,
       packagedescription: cartdata.PackageDescription,
+      ActualPrice: cartdata.ActualPrice,
     });
     cart.totalPrice = Number(cartdata.ActualPrice);
   } else {
@@ -196,6 +198,7 @@ userSchema.methods.addToCart = function (cartdata) {
         packageImage: cartdata.image,
         packageName: cartdata.PackageName,
         packagedescription: cartdata.PackageDescription,
+        ActualPrice: cartdata.ActualPrice,
       });
       cart.totalPrice += cartdata.ActualPrice;
     } else {
@@ -208,14 +211,23 @@ userSchema.methods.addToCart = function (cartdata) {
   return this.save();
 };
 
-userSchema.methods.removeFromCart = function (_packageid) {
+userSchema.methods.removeFromCart = function (packageid) {
   let cart = this.cart;
   const isExisting = cart.items.findIndex(
     (objInItems) =>
-      new String(objInItems._packageid).trim() === new String(_packageid).trim()
+      new String(objInItems._packageid).trim() === new String(packageid).trim()
   );
   if (isExisting >= 0) {
-    cart.items.splice(isExisting, 1);
+    var newcart = cart.items[0];
+    var Price = newcart.ActualPrice;
+
+    if (newcart.qty == 1) {
+      cart.items.splice(isExisting, 1);
+    } else {
+      newcart.qty = newcart.qty - 1;
+
+      cart.totalPrice -= Price;
+    }
 
     return this.save();
   }

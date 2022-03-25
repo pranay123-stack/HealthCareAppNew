@@ -14,9 +14,9 @@ router.post("/addcart", protect, (req, res) => {
       const cartdata = data[0].OrgPackages[0];
       user.addToCart(cartdata);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.json({ error: err }));
 
-  res.json("added");
+  res.json("added successfully to cart");
 });
 
 router.get("/getcart", protect, (req, res) => {
@@ -28,16 +28,13 @@ router.get("/getcart", protect, (req, res) => {
       res.json({ cart: user.cart });
     })
     .catch((err) => {
-      console.log(err);
+      res.json({ err: err });
     });
 });
 
 router.delete("/deleteIncart", protect, (req, res) => {
-  const _packageid = req.query.packageid;
-  req.user.removeFromCart(_packageid);
-  res.json("removed");
+  req.user.removeFromCart(req.query.packageid);
+  res.json("removed from cart");
 });
-
-// checkout razorpay payment gateway
 
 module.exports = router;
