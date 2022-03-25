@@ -216,6 +216,7 @@ userSchema.methods.removeFromCart = function (_packageid) {
   );
   if (isExisting >= 0) {
     cart.items.splice(isExisting, 1);
+
     return this.save();
   }
 };

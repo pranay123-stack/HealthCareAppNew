@@ -33,16 +33,9 @@ router.get("/getcart", protect, (req, res) => {
 });
 
 router.delete("/deleteIncart", protect, (req, res) => {
-  let user = req.user;
-  var _packageid = req.query.packageid;
-  user
-    .removeFromCart(_packageid)
-    .then(() => {
-      res.json({ removed: _packageid });
-    })
-    .catch((err) => {
-      res.json(err);
-    });
+  const _packageid = req.query.packageid;
+  req.user.removeFromCart(_packageid);
+  res.json("removed");
 });
 
 // checkout razorpay payment gateway

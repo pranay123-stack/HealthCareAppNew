@@ -76,7 +76,6 @@ router.delete("/deletepackage/:packageid", protect, async (req, res, next) => {
     .then((data) => {
       res.status(200).json({
         message: "package data of corresponding packageid deleted successfully",
-        result: data,
       });
     })
     .catch((err) => {
