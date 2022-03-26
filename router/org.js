@@ -17,6 +17,7 @@ router.post("/addorg", protect, (req, res, next) => {
     .upload(file.tempFilePath, (err, result) => {
       organization = new Organization({
         _orgid: new mongoose.Types.ObjectId(),
+        usertype: req.user.usertype,
         OrgName: req.body.OrgName,
         image: result.url,
 
@@ -140,6 +141,21 @@ router.put("/addpackagewithorgid", protect, async (req, res, next) => {
       }
     );
   });
+});
+
+router.get("/queryorgpackagebyOrgName", (req, res) => {
+  Organization.find({ OrgName: req.query.OrgName }, { OrgPackages: 1, _id: 0 })
+    .exec()
+    .then((data) => {
+      var orgpackage = data[0];
+
+      var result = orgpackage.OrgPackages;
+
+      res.json({ results: result });
+    })
+    .catch((err) => {
+      res.json({ error: err });
+    });
 });
 
 router.get("/getorg/:orgid", function (req, res) {

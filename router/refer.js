@@ -3,20 +3,53 @@ const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
 const User = require("../models/UserSchema");
 const Lead = require("../models/LeadsSchema");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: "pranay-gaurav",
+  api_key: "949454261729874",
+  api_secret: "o_CrJsRu7RG-FRyDBbDGj2o7J8I",
+});
 
 //refer route
 router.post("/patientrefer", protect, (req, res) => {
   let user = req.user;
-  var referDetails = req.body;
 
-  user
-    .addPatientRefer(referDetails)
-    .then((doc) => {
-      res.json({ "added successfully": referDetails });
-      // Also update the wallet
+  var file = req.files.uploadDocument;
+  cloudinary.uploader
+    .upload(file.tempFilePath, (err, uploadresult) => {
+      var details = req.body;
+
+      var referaldetails = {
+        data: details,
+        image: uploadresult.url,
+      };
+
+      var referedpatientdetails = {
+        PatientName: referaldetails.data.PatientName,
+        PatientAge: referaldetails.data.PatientAge,
+        PatientGender: referaldetails.data.PatientGender,
+        PatientAttendentName: referaldetails.data.PatientAttendentName,
+        PatientMobileNumber: referaldetails.data.PatientMobileNumber,
+        OrgType: referaldetails.data.OrgType,
+        OrgName: referaldetails.data.OrgName,
+        ServiceType: referaldetails.data.ServiceType,
+        Description: referaldetails.data.Description,
+        uploadDocument: referaldetails.image,
+      };
+
+      user
+        .addPatientRefer(referaldetails)
+        .then((doc) => {
+          res.json({ "added successfully": referedpatientdetails });
+          // Also update the wallet
+        })
+        .catch((err) => {
+          res.json(err);
+        });
     })
     .catch((err) => {
-      res.json(err);
+      res.status(500).json({ error: err });
     });
 });
 

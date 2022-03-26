@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const User = require("../models/UserSchema");
+const { protect } = require("../middleware/authMiddleware");
 
 router.post("/register", async (req, res) => {
   if (
@@ -12,7 +13,6 @@ router.post("/register", async (req, res) => {
     !req.body.email ||
     !req.body.usertype ||
     !req.body.phone ||
-    !req.body.OrgName ||
     !req.body.password
   ) {
     return res.status(422).json({ error: "Please filled the fields properly" });
@@ -101,18 +101,34 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/users", (req, res) => {
-  User.find({}, { _id: 0, tokens: 0 })
+router.get("/users", protect, (req, res) => {
+  if (
+    req.user.usertype == "admin" &&
+    req.user.OrgName == "admin Organization"
+  ) {
+    User.find({}, { _id: 0, tokens: 0 })
 
-    .then((users) => {
-      res.status(200).json({ results: users });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err });
-    });
+      .then((users) => {
+        res.status(200).json({ results: users });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err });
+      });
+  } else {
+    if (req.user.usertype == "doctor") {
+      User.find({ OrgName: req.body.OrgName }, { _id: 0, tokens: 0 })
+
+        .then((users) => {
+          res.status(200).json({ results: users });
+        })
+        .catch((err) => {
+          res.status(500).json({ error: err });
+        });
+    }
+  }
 });
 
-router.put("/userupdate/:userid", (req, res) => {
+router.put("/userupdate/:userid", protect, (req, res) => {
   const _userid = req.params.userid;
   const updates = req.body;
   const options = { new: true };
@@ -126,12 +142,23 @@ router.put("/userupdate/:userid", (req, res) => {
         res.status(500).json({ error: err });
       }
 
-      res.status(200).json({ message: "updated successfully", result });
+      var updateduser = {
+        firstname: result.firstname,
+        lastname: result.lastname,
+        gender: result.gender,
+        email: result.email,
+        phone: result.phone,
+        usertype: result.usertype,
+      };
+
+      res
+        .status(200)
+        .json({ message: " user updated successfully", updateduser });
     }
   );
 });
 
-router.delete("/userdelete/:userid", (req, res) => {
+router.delete("/userdelete/:userid", protect, (req, res) => {
   const _userid = req.params.userid;
 
   User.findOneAndDelete({ _userid: _userid }, function (err, result) {

@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: "pranay-gaurav",
+  api_key: "949454261729874",
+  api_secret: "o_CrJsRu7RG-FRyDBbDGj2o7J8I",
+});
 
 const userSchema = new mongoose.Schema(
   {
@@ -71,10 +78,11 @@ const userSchema = new mongoose.Schema(
             PatientGender: String,
             PatientAttendentName: String,
             PatientMobileNumber: Number,
-            OrganizationCategory: String,
-            HospitalName: String,
+            OrgType: { type: String, ref: "Organization" },
+            OrgName: { type: String, ref: "Organization" },
             ServiceType: String,
             Description: String,
+            uploadDocument: String,
           },
         },
       ],
@@ -248,21 +256,23 @@ userSchema.methods.addLead = function (leaddata) {
   return this.save();
 };
 
-userSchema.methods.addPatientRefer = function (referalDetails) {
+userSchema.methods.addPatientRefer = function (referaldetails) {
   let Patientsrefer = this.Patientsrefer;
   Patientsrefer.referedPatients.push({
     referalDetails: {
-      PatientName: referalDetails.PatientName,
-      PatientAge: referalDetails.PatientAge,
-      PatientGender: referalDetails.PatientGender,
-      PatientAttendentName: referalDetails.PatientAttendentName,
-      PatientMobileNumber: referalDetails.PatientMobileNumber,
-      OrganizationCategory: referalDetails.OrganizationCategory,
-      HospitalName: referalDetails.HospitalName,
-      ServiceType: referalDetails.ServiceType,
-      Description: referalDetails.Description,
+      PatientName: referaldetails.data.PatientName,
+      PatientAge: referaldetails.data.PatientAge,
+      PatientGender: referaldetails.data.PatientGender,
+      PatientAttendentName: referaldetails.data.PatientAttendentName,
+      PatientMobileNumber: referaldetails.data.PatientMobileNumber,
+      OrgType: referaldetails.data.OrgType,
+      OrgName: referaldetails.data.OrgName,
+      ServiceType: referaldetails.data.ServiceType,
+      Description: referaldetails.data.Description,
+      uploadDocument: referaldetails.image,
     },
   });
+  // var file = req.files.image;
 
   return this.save();
 };

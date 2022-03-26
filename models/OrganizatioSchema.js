@@ -112,6 +112,8 @@ const OrganizationSchema = new mongoose.Schema(
   {
     _orgid: { type: mongoose.Schema.Types.ObjectId },
 
+    usertype: { type: String, ref: "User" },
+
     OrgPackages: [packages],
 
     OrgName: {
