@@ -14,7 +14,7 @@ router.post("/addcart", protect, (req, res) => {
       const cartdata = data[0].OrgPackages[0];
       user.addToCart(cartdata);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.json({ error: err }));
 
   res.json("added successfully to cart");
 });
@@ -23,7 +23,7 @@ router.get("/getcart", protect, (req, res) => {
   let user = req.user;
 
   user
-    .populate("cart.cartitems.PackageDetails._packageid")
+    .populate("cart.items._packageid")
 
     .then((user) => {
       res.json({ cart: user.cart });
@@ -38,8 +38,12 @@ router.delete("/deleteIncart", protect, (req, res) => {
   res.json("removed from cart");
 });
 
-// checkout api -COD
+router.get("/checkoutcart", protect, (req, res) => {
+  res.json({ cart: req.user.cart });
+});
 
-// booking api
+router.post("/pay", protect, (req, res) => {
+  res.json({ message: "payment done successfully throgh COD" });
+});
 
 module.exports = router;
