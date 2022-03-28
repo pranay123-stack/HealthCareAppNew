@@ -55,6 +55,12 @@ const userSchema = new mongoose.Schema(
       ref: "Organization",
     },
 
+    Status: {
+      type: String,
+      enum: ["Active", "InActive"],
+      default: "Active",
+    },
+
     cart: {
       cartitems: [
         {

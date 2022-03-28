@@ -35,6 +35,7 @@ router.post("/register", async (req, res) => {
       phone: req.body.phone,
       password: req.body.password,
       OrgName: req.body.OrgName,
+      Status: req.body.Status,
     });
     await user.save();
     res.status(200).json({
@@ -47,6 +48,7 @@ router.post("/register", async (req, res) => {
       usertype: user.usertype,
       phone: user.phone,
       OrgName: user.OrgName,
+      Status: user.Status,
     });
   } catch (err) {
     res.status(500).json({ error: err });
