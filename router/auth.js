@@ -104,7 +104,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/users", protect, (req, res) => {
-  if (req.user.usertype == "superAdmin") {
+  if (req.user.usertype == "superAdmin" && req.user.Status == "Active") {
     User.find({}, { _id: 0, tokens: 0 })
 
       .then((users) => {
@@ -113,7 +113,7 @@ router.get("/users", protect, (req, res) => {
       .catch((err) => {
         res.status(500).json({ error: err });
       });
-  } else if (req.user.usertype == "admin") {
+  } else if (req.user.usertype == "admin" && req.user.Status == "Active") {
     User.find({ OrgName: req.user.OrgName }, { _id: 0, tokens: 0 })
       .then((users) => {
         res.status(200).json({ results: users });
