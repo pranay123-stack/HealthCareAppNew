@@ -14,15 +14,16 @@ router.post("/addcart", protect, (req, res) => {
       const cartdata = data[0].OrgPackages[0];
       user.addToCart(cartdata);
     })
-    .catch((err) => res.json({ error: err }));
+    .catch((err) => console.log(err));
 
   res.json("added successfully to cart");
 });
 
 router.get("/getcart", protect, (req, res) => {
   let user = req.user;
+
   user
-    .populate("cart.items._packageid")
+    .populate("cart.cartitems.PackageDetails._packageid")
 
     .then((user) => {
       res.json({ cart: user.cart });
@@ -36,5 +37,9 @@ router.delete("/deleteIncart", protect, (req, res) => {
   req.user.removeFromCart(req.query.packageid);
   res.json("removed from cart");
 });
+
+// checkout api -COD
+
+// booking api
 
 module.exports = router;

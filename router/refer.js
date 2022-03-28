@@ -53,27 +53,6 @@ router.post("/patientrefer", protect, (req, res) => {
     });
 });
 
-router.post("/leadsrefer", protect, (req, res) => {
-  let user = req.user;
-  var _leadid = req.query.leadid;
-
-  Lead.find({ _leadid: _leadid }, { _id: 0 })
-    .then((leaddata) => {
-      user
-        .addLead(leaddata)
-        .then((doc) => {
-          res.json({ added: leaddata });
-          // Also update the wallet
-        })
-        .catch((err) => {
-          res.json(err);
-        });
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-});
-
 router.get("/patientsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
   User.find({ _userid: _userid })
@@ -85,6 +64,24 @@ router.get("/patientsrefered/:userid", (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+    });
+});
+
+router.post("/leadsrefer", protect, (req, res) => {
+  Lead.find({ _leadid: req.query.leadid }, { _id: 0 })
+    .then((leaddata) => {
+      req.user
+        .addLead(leaddata)
+        .then((doc) => {
+          res.json({ added: leaddata });
+          // Also update the wallet
+        })
+        .catch((err) => {
+          res.json(err);
+        });
+    })
+    .catch((err) => {
+      res.json(err);
     });
 });
 

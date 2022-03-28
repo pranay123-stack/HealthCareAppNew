@@ -52,21 +52,31 @@ const userSchema = new mongoose.Schema(
 
     OrgName: {
       type: String,
+      ref: "Organization",
     },
 
     cart: {
-      items: [
+      cartitems: [
         {
-          _packageid: mongoose.Schema.Types.ObjectId,
-          packageImage: String,
-          packageName: String,
-          packagedescription: String,
-          ActualPrice: String,
-          qty: Number,
+          PackageDetails: {
+            _packageid: mongoose.Schema.Types.ObjectId,
+            packageImage: String,
+            packageName: String,
+            packageDescription: String,
+            ActualPrice: Number,
+            OfferPrice: Number,
+            packageqty: Number,
+          },
+
+          PriceDetails: {
+            packageqty: Number,
+            ActualPrice: Number,
+            Discount: Number,
+            SellingPrice: Number,
+            TotalPrice: Number,
+          },
         },
       ],
-
-      totalPrice: Number,
     },
 
     Patientsrefer: {
@@ -182,38 +192,61 @@ userSchema.methods.generateAuthToken = async function () {
 
 userSchema.methods.addToCart = function (cartdata) {
   let cart = this.cart;
-  if (cart.items.length == 0) {
-    cart.items.push({
-      _packageid: cartdata._packageid,
-      qty: 1,
-      packageImage: cartdata.image,
-      packageName: cartdata.PackageName,
-      packagedescription: cartdata.PackageDescription,
-      ActualPrice: cartdata.ActualPrice,
+  var OfferPrice = cartdata.OfferPrice;
+  var ActualPrice = cartdata.ActualPrice;
+  var Discount;
+  var SellingPrice;
+
+  if (cart.cartitems.length == 0) {
+    cart.cartitems.push({
+      PackageDetails: {
+        _packageid: cartdata._packageid,
+        packageqty: 1,
+        packageImage: cartdata.image,
+        packageName: cartdata.PackageName,
+        packageDescription: cartdata.PackageDescription,
+        ActualPrice: cartdata.ActualPrice,
+        OfferPrice: cartdata.OfferPrice,
+      },
+
+      PriceDetails: {
+        ActualPrice: ActualPrice,
+        packageqty: 1,
+        Discount: ActualPrice - OfferPrice,
+      },
     });
-    cart.totalPrice = Number(cartdata.ActualPrice);
   } else {
-    const isExisting = cart.items.findIndex((objInItems) => {
+    const isExisting = cart.cartitems.find((objInItems) => {
       return (
         new String(objInItems._packageid).trim() ===
         new String(cartdata._packageid).trim()
       );
     });
     if (isExisting == -1) {
-      cart.items.push({
-        _packageid: cartdata._packageid,
-        qty: 1,
-        packageImage: cartdata.image,
-        packageName: cartdata.PackageName,
-        packagedescription: cartdata.PackageDescription,
-        ActualPrice: cartdata.ActualPrice,
+      cart.cartitems.push({
+        PackageDetails: {
+          _packageid: cartdata._packageid,
+          packageqty: 1,
+          packageImage: cartdata.image,
+          packageName: cartdata.PackageName,
+          packageDescription: cartdata.PackageDescription,
+          ActualPrice: cartdata.ActualPrice,
+          OfferPrice: cartdata.OfferPrice,
+        },
+
+        PriceDetails: {
+          ActualPrice: cartdata.ActualPrice,
+          packageqty: 1,
+          Discount: ActualPrice - OfferPrice,
+        },
       });
-      cart.totalPrice += cartdata.ActualPrice;
     } else {
-      existingPackageInCart = cart.items[isExisting];
-      existingPackageInCart.qty += 1;
+      existingPackageInCart = cart.cartitems;
+
+      console.log(existingPackageInCart);
+
+      // existingPackageInCart.packageqty += 1;
     }
-    cart.totalPrice += cartdata.ActualPrice;
   }
 
   return this.save();
