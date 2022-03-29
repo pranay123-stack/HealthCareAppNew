@@ -15,14 +15,14 @@ router.post("/register", async (req, res) => {
     !req.body.phone ||
     !req.body.password
   ) {
-    return res.status(422).json({ error: "Please filled the fields properly" });
+    return res.status(200).json({ error: "Please filled the fields properly" });
   }
 
   try {
     const userExist = await User.findOne({ email: req.body.email });
 
     if (userExist) {
-      return res.status(422).json({ error: "email already exists" });
+      return res.status(200).json({ error: "email already exists" });
     }
 
     const user = new User({

@@ -53,6 +53,8 @@ router.post("/patientrefer", protect, (req, res) => {
     });
 });
 
+// category api
+
 router.get("/patientsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
   User.find({ _userid: _userid })

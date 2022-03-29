@@ -214,6 +214,17 @@ router.get("/orgquerybyOrgType", async (req, res) => {
     });
 });
 
+router.get("/fetchorgdetailsbyorgtype", (req, res) => {
+  Organization.find({ OrgType: req.body.OrgType })
+    .exec()
+    .then((orgs) => {
+      res.json({ results: orgs });
+    })
+    .catch((err) => {
+      res.json({ error: err });
+    });
+});
+
 router.get("/getorgs/data/categorywise", async (req, res, next) => {
   try {
     var hospitalarray = [];
