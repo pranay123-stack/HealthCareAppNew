@@ -152,4 +152,29 @@ router.put("/updatepackage/:packageid", protect, (req, res) => {
   );
 });
 
+router.get("/packagecategorybasedonOrgName", (req, res) => {
+  const { OrgName } = req.body;
+  Organization.find({ OrgName: OrgName }, "OrgPackages")
+
+    .exec()
+    .then((packages) => {
+      if (packages.length > 0) {
+        var result = packages[0].OrgPackages;
+        var packagecategory = [];
+        for (var i = 0; i < result.length; i++) {
+          packagecategory.push(result[i].PackageType);
+        }
+
+        res.status(200).json({
+          packagecategory,
+        });
+      } else {
+        res.status(400).json("no packages found for given OrgName");
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
+    });
+});
+
 module.exports = router;
