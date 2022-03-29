@@ -153,7 +153,7 @@ router.put("/updatepackage/:packageid", protect, (req, res) => {
 });
 
 router.get("/packagecategorybasedonOrgName", (req, res) => {
-  const { OrgName } = req.body;
+  const { OrgName } = req.query;
   Organization.find({ OrgName: OrgName }, "OrgPackages")
 
     .exec()

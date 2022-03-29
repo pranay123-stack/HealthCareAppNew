@@ -226,8 +226,9 @@ router.get("/allcategory", (req, res) => {
     });
 });
 
-router.get("/fetchorgdetailsbyorgtype", (req, res) => {
-  Organization.find({ OrgType: req.body.OrgType }, { OrgName: 1, _id: 0 })
+router.get("/listorgsbyorgtype", (req, res) => {
+  Organization.find({ OrgType: req.query.OrgType }, { OrgName: 1, _id: 0 })
+
     .exec()
     .then((orgs) => {
       res.json({ results: orgs });
