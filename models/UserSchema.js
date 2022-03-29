@@ -101,6 +101,7 @@ const userSchema = new mongoose.Schema(
       referedLeads: [
         {
           referalDetails: {
+            _leadid: { type: mongoose.Schema.Types.ObjectId, ref: "Lead" },
             PatientName: String,
             PatientAge: Number,
             PatientGender: String,
@@ -268,6 +269,7 @@ userSchema.methods.addLeadRefer = function (referdata) {
   let Leadsrefer = this.Leadsrefer;
   Leadsrefer.referedLeads.push({
     referalDetails: {
+      _leadid: referdata._leadid,
       PatientName: referdata.PatientName,
       PatientAge: referdata.PatientAge,
       PatientGender: referdata.PatientGender,
