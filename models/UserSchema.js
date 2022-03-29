@@ -264,15 +264,15 @@ userSchema.methods.removeFromCart = function (packageid) {
   }
 };
 
-userSchema.methods.addLeadRefer = function (leaddata) {
+userSchema.methods.addLeadRefer = function (referdata) {
   let Leadsrefer = this.Leadsrefer;
   Leadsrefer.referedLeads.push({
     referalDetails: {
-      PatientName: leaddata.PatientName,
-      PatientAge: leaddata.PatientAge,
-      PatientGender: leaddata.PatientGender,
-      OrgName: leaddata.OrgName,
-      PackageName: leaddata.PackageName,
+      PatientName: referdata.PatientName,
+      PatientAge: referdata.PatientAge,
+      PatientGender: referdata.PatientGender,
+      OrgName: referdata.OrgName,
+      PackageName: referdata.PackageName,
     },
   });
 

@@ -160,6 +160,7 @@ router.get("/packagecategorybasedonOrgName", (req, res) => {
     .then((packages) => {
       if (packages.length > 0) {
         var result = packages[0].OrgPackages;
+
         var packagecategory = [];
         for (var i = 0; i < result.length; i++) {
           packagecategory.push(result[i].PackageType);

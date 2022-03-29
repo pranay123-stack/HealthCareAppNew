@@ -42,7 +42,6 @@ router.post("/patientrefer", protect, (req, res) => {
         .addPatientRefer(referaldetails)
         .then((doc) => {
           res.json({ "added successfully": referedpatientdetails });
-          // Also update the wallet
         })
         .catch((err) => {
           res.json(err);
@@ -52,8 +51,6 @@ router.post("/patientrefer", protect, (req, res) => {
       res.status(500).json({ error: err });
     });
 });
-
-// category api
 
 router.get("/patientsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
@@ -72,11 +69,11 @@ router.get("/patientsrefered/:userid", (req, res) => {
 router.post("/leadsrefer", protect, (req, res) => {
   Lead.find({ _leadid: req.query.leadid }, { _id: 0 })
     .then((leaddata) => {
+      var referdata = leaddata[0];
       req.user
-        .addLeadRefer(leaddata)
+        .addLeadRefer(referdata)
         .then((doc) => {
-          res.json({ added: leaddata });
-          // Also update the wallet
+          res.json(leaddata[0]);
         })
         .catch((err) => {
           res.json(err);
