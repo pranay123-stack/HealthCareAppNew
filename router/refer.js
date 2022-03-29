@@ -71,7 +71,7 @@ router.post("/leadsrefer", protect, (req, res) => {
   Lead.find({ _leadid: req.query.leadid }, { _id: 0 })
     .then((leaddata) => {
       req.user
-        .addLead(leaddata)
+        .addLeadRefer(leaddata)
         .then((doc) => {
           res.json({ added: leaddata });
           // Also update the wallet

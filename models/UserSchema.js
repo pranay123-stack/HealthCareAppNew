@@ -100,11 +100,11 @@ const userSchema = new mongoose.Schema(
     Leadsrefer: {
       referedLeads: [
         {
-          leadDetails: {
+          referalDetails: {
             PatientName: String,
             PatientAge: Number,
             PatientGender: String,
-            HospitalName: String,
+            OrgName: { type: String, ref: "Organization" },
             PackageName: String,
           },
         },
@@ -217,6 +217,7 @@ userSchema.methods.addToCart = function (cartdata) {
     if (isExisting == -1) {
       let Discount = cartdata.ActualPrice - cartdata.OfferPrice;
       let SellingPrice = cartdata.ActualPrice - Discount;
+
       cart.items.push({
         _packageid: cartdata._packageid,
         packageqty: 1,
@@ -233,11 +234,8 @@ userSchema.methods.addToCart = function (cartdata) {
       existingPackageInCart = cart.items[isExisting];
 
       existingPackageInCart.packageqty += 1;
-      existingPackageInCart.ActualPrice += existingPackageInCart.ActualPrice;
-      existingPackageInCart.Discount += existingPackageInCart.Discount;
-      existingPackageInCart.SellingPrice =
-        existingPackageInCart.ActualPrice - existingPackageInCart.Discount;
-      existingPackageInCart.Total = existingPackageInCart.SellingPrice;
+
+      existingPackageInCart.Total += existingPackageInCart.SellingPrice;
     }
   }
 
@@ -248,29 +246,32 @@ userSchema.methods.removeFromCart = function (packageid) {
   let cart = this.cart;
   const isExisting = cart.items.findIndex(
     (objInItems) =>
-      new String(objInItems.packageid).trim() === new String(packageid).trim()
+      new String(objInItems._packageid).trim() === new String(packageid).trim()
   );
   if (isExisting >= 0) {
-    let cartitems = cart.items[0];
-
-    if (cartitems.packageqty == 1) {
+    existingPackageInCart = cart.items[isExisting];
+    if (existingPackageInCart.packageqty == 1) {
       cart.items.splice(isExisting, 1);
     } else {
-      cartitems.packageqty = cartitems.packageqty - 1;
+      existingPackageInCart = cart.items[isExisting];
+
+      existingPackageInCart.packageqty -= 1;
+
+      existingPackageInCart.Total -= existingPackageInCart.SellingPrice;
     }
 
     return this.save();
   }
 };
 
-userSchema.methods.addLead = function (leaddata) {
+userSchema.methods.addLeadRefer = function (leaddata) {
   let Leadsrefer = this.Leadsrefer;
   Leadsrefer.referedLeads.push({
-    leadDetails: {
+    referalDetails: {
       PatientName: leaddata.PatientName,
       PatientAge: leaddata.PatientAge,
       PatientGender: leaddata.PatientGender,
-      HospitalName: leaddata.HospitalName,
+      OrgName: leaddata.OrgName,
       PackageName: leaddata.PackageName,
     },
   });
