@@ -282,21 +282,39 @@ userSchema.methods.addLeadRefer = function (referdata) {
 };
 
 userSchema.methods.addPatientRefer = function (referaldetails) {
-  let Patientsrefer = this.Patientsrefer;
-  Patientsrefer.referedPatients.push({
-    referalDetails: {
-      PatientName: referaldetails.data.PatientName,
-      PatientAge: referaldetails.data.PatientAge,
-      PatientGender: referaldetails.data.PatientGender,
-      PatientAttendentName: referaldetails.data.PatientAttendentName,
-      PatientMobileNumber: referaldetails.data.PatientMobileNumber,
-      OrgType: referaldetails.data.OrgType,
-      OrgName: referaldetails.data.OrgName,
-      ServiceType: referaldetails.data.ServiceType,
-      Description: referaldetails.data.Description,
-      uploadDocument: referaldetails.image,
-    },
-  });
+  if (referaldetails.image) {
+    let Patientsrefer = this.Patientsrefer;
+    Patientsrefer.referedPatients.push({
+      referalDetails: {
+        PatientName: referaldetails.data.PatientName,
+        PatientAge: referaldetails.data.PatientAge,
+        PatientGender: referaldetails.data.PatientGender,
+        PatientAttendentName: referaldetails.data.PatientAttendentName,
+        PatientMobileNumber: referaldetails.data.PatientMobileNumber,
+        OrgType: referaldetails.data.OrgType,
+        OrgName: referaldetails.data.OrgName,
+        ServiceType: referaldetails.data.ServiceType,
+        Description: referaldetails.data.Description,
+        uploadDocument: referaldetails.image,
+      },
+    });
+  } else {
+    let Patientsrefer = this.Patientsrefer;
+    Patientsrefer.referedPatients.push({
+      referalDetails: {
+        PatientName: referaldetails.data.PatientName,
+        PatientAge: referaldetails.data.PatientAge,
+        PatientGender: referaldetails.data.PatientGender,
+        PatientAttendentName: referaldetails.data.PatientAttendentName,
+        PatientMobileNumber: referaldetails.data.PatientMobileNumber,
+        OrgType: referaldetails.data.OrgType,
+        OrgName: referaldetails.data.OrgName,
+        ServiceType: referaldetails.data.ServiceType,
+        Description: referaldetails.data.Description,
+      },
+    });
+  }
+
   // var file = req.files.image;
 
   return this.save();

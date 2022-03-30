@@ -15,41 +15,72 @@ cloudinary.config({
 router.post("/patientrefer", protect, (req, res) => {
   let user = req.user;
 
-  var file = req.files.uploadDocument;
-  cloudinary.uploader
-    .upload(file.tempFilePath, (err, uploadresult) => {
-      var details = req.body;
+  if (req.files) {
+    let file = req.files.uploadDocument;
+    cloudinary.uploader
+      .upload(file.tempFilePath, (err, uploadresult) => {
+        let detail = req.body;
 
-      var referaldetails = {
-        data: details,
-        image: uploadresult.url,
-      };
+        let referaldetail = {
+          data: detail,
+          image: uploadresult.url,
+        };
 
-      var referedpatientdetails = {
-        PatientName: referaldetails.data.PatientName,
-        PatientAge: referaldetails.data.PatientAge,
-        PatientGender: referaldetails.data.PatientGender,
-        PatientAttendentName: referaldetails.data.PatientAttendentName,
-        PatientMobileNumber: referaldetails.data.PatientMobileNumber,
-        OrgType: referaldetails.data.OrgType,
-        OrgName: referaldetails.data.OrgName,
-        ServiceType: referaldetails.data.ServiceType,
-        Description: referaldetails.data.Description,
-        uploadDocument: referaldetails.image,
-      };
+        var referedpatientdetails = {
+          PatientName: referaldetail.data.PatientName,
+          PatientAge: referaldetail.data.PatientAge,
+          PatientGender: referaldetail.data.PatientGender,
+          PatientAttendentName: referaldetail.data.PatientAttendentName,
+          PatientMobileNumber: referaldetail.data.PatientMobileNumber,
+          OrgType: referaldetail.data.OrgType,
+          OrgName: referaldetail.data.OrgName,
+          ServiceType: referaldetail.data.ServiceType,
+          Description: referaldetail.data.Description,
+          uploadDocument: referaldetail.image,
+        };
 
-      user
-        .addPatientRefer(referaldetails)
-        .then((doc) => {
-          res.json({ "added successfully": referedpatientdetails });
-        })
-        .catch((err) => {
-          res.json(err);
+        user
+          .addPatientRefer(referaldetail)
+          .then((doc) => {
+            res.json({ "added successfully": referedpatientdetails });
+          })
+          .catch((err) => {
+            res.json(err);
+          });
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err });
+      });
+  } else {
+    let details = req.body;
+
+    let referaldetails = {
+      data: details,
+    };
+
+    let referedpatientdetails = {
+      PatientName: referaldetails.data.PatientName,
+      PatientAge: referaldetails.data.PatientAge,
+      PatientGender: referaldetails.data.PatientGender,
+      PatientAttendentName: referaldetails.data.PatientAttendentName,
+      PatientMobileNumber: referaldetails.data.PatientMobileNumber,
+      OrgType: referaldetails.data.OrgType,
+      OrgName: referaldetails.data.OrgName,
+      ServiceType: referaldetails.data.ServiceType,
+      Description: referaldetails.data.Description,
+    };
+
+    user
+      .addPatientRefer(referaldetails)
+      .then((doc) => {
+        res.json({
+          "added successfully withot uploading": referedpatientdetails,
         });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err });
-    });
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  }
 });
 
 router.get("/patientsrefered/:userid", (req, res) => {
