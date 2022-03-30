@@ -124,6 +124,52 @@ router.get("/users", protect, (req, res) => {
   }
 });
 
+router.get("/packages", protect, (req, res) => {
+  let user = req.user;
+  if (user.usertype === "doctor") {
+    Organization.find({ OrgName: user.OrgName }, "OrgPackages")
+      .exec()
+      .then((packages) => {
+        if (packages.length > 0) {
+          var result = packages[0].OrgPackages;
+
+          res.status(200).json({
+            result,
+          });
+        } else {
+          res.status(400).json("no packages found for given OrgName");
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err });
+      });
+  } else {
+    Organization.find({}, "OrgPackages", function (err, result) {
+      if (err) {
+        res.json(err);
+      }
+
+      if (result.length > 0) {
+        var final = [];
+        var finalobj = {};
+        for (var i = 0; i < result.length; i++) {
+          for (var j = 0; j < result[i].OrgPackages.length; j++) {
+            final.push(result[i].OrgPackages[j]);
+          }
+        }
+
+        for (var k = 0; k < final.length; k++) {
+          finalobj[k] = final[k];
+        }
+
+        res.status(200).json({ results: final });
+      } else {
+        res.status(400).json("no packages avaialble");
+      }
+    });
+  }
+});
+
 router.put("/userupdate/:userid", protect, (req, res) => {
   const _userid = req.params.userid;
   const updates = req.body;
