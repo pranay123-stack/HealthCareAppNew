@@ -58,7 +58,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     if (!req.body.email || !req.body.password) {
-      return res.status(404).json({ message: "please fill login details" });
+      return res.status(200).json({ message: "please fill login details" });
     }
 
     const userLogin = await User.findOne({ email: req.body.email });
@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
         });
       }
     } else {
-      res.status(400).json({
+      res.status(200).json({
         error: "Invalid credentials",
         loginstatus: "false",
       });

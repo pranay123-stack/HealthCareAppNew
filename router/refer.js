@@ -86,7 +86,7 @@ router.post("/leadsrefer", protect, (req, res) => {
 
 router.get("/leadsrefered/:userid", (req, res) => {
   const _userid = req.params.userid;
-  User.find({ _userid: _userid })
+  User.find({ _userid: _userid }, { _id: 0 })
     .then((userdata) => {
       var data = userdata[0];
       var result = data.Leadsrefer;
