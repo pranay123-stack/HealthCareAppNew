@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const User = require("../models/UserSchema");
 const { protect } = require("../middleware/authMiddleware");
+const Organization = require("../models/OrganizatioSchema");
 
 router.post("/register", async (req, res) => {
   if (
