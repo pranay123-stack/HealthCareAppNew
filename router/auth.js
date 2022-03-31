@@ -43,6 +43,7 @@ router.post("/register", async (req, res) => {
       message: "user registered successfully",
       _userid: user._userid,
       firstname: user.firstname,
+      password: user.password,
       lastname: user.lastname,
       gender: user.gender,
       email: user.email,
@@ -172,33 +173,32 @@ router.get("/packages", protect, (req, res) => {
 });
 
 router.put("/userupdate/:userid", protect, (req, res) => {
-  const _userid = req.params.userid;
-  const updates = req.body;
-  const options = { new: true };
-
-  User.findOneAndUpdate(
-    { _userid: _userid },
-    updates,
-    options,
-    function (err, result) {
-      if (err) {
-        res.status(500).json({ error: err });
-      }
-
-      var updateduser = {
-        firstname: result.firstname,
-        lastname: result.lastname,
-        gender: result.gender,
-        email: result.email,
-        phone: result.phone,
-        usertype: result.usertype,
+  User.findOne({ _userid: req.params.userid }, function (err, user) {
+    if (err) return false;
+    (user.firstname = req.body.firstname || user.firstname),
+      (user.lastname = req.body.lastname || user.lastname),
+      (user.gender = req.body.gender || user.gender),
+      (user.phone = req.body.phone || user.phone),
+      (user.email = req.body.email || user.email),
+      (user.Status = req.body.Status || user.Status),
+      (user.OrgName = req.body.OrgName || user.OrgName),
+      (user.usertype = req.body.usertype || user.usertype),
+      (user.password = req.body.password || user.password);
+    user.save().then((user) => {
+      var updateuser = {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        gender: user.gender,
+        phone: user.phone,
+        usertype: user.usertype,
+        OrgName: user.OrgName,
+        email: user.email,
+        Status: user.Status,
       };
 
-      res
-        .status(200)
-        .json({ message: " user updated successfully", updateduser });
-    }
-  );
+      res.json(updateuser);
+    });
+  });
 });
 
 router.delete("/userdelete/:userid", protect, (req, res) => {
