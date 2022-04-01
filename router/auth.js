@@ -127,8 +127,9 @@ router.get("/users", protect, (req, res) => {
 });
 
 router.get("/packages", protect, (req, res) => {
-  let user = req.user;
-  if (user.usertype === "doctor") {
+  var user = req.user;
+  if (user.usertype == "doctor") {
+    console.log(user.usertype);
     Organization.find({ OrgName: user.OrgName }, "OrgPackages")
       .exec()
       .then((packages) => {
