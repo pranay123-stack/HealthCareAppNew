@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema(
       ref: "Organization",
     },
 
+    image: {
+      type: String,
+    },
+
     Status: {
       type: String,
       enum: ["Active", "InActive"],

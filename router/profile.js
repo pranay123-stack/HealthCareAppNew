@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../models/UserSchema");
+const { protect } = require("../middleware/authMiddleware");
 
 const cloudinary = require("cloudinary").v2;
 
@@ -9,43 +11,42 @@ cloudinary.config({
   api_secret: "o_CrJsRu7RG-FRyDBbDGj2o7J8I",
 });
 
-router.post("/profile", protect, (req, res) => {
+router.put("/profile", protect, (req, res) => {
+  let user = req.user;
   const file = req.files.image;
 
   cloudinary.uploader.upload(file.tempFilePath, (err, result) => {
-    var detail = {
-      _packageid: new mongoose.Types.ObjectId(),
-      OrgName: req.body.OrgName,
-      PackageName: req.body.PackageName,
-      PackageType: req.body.PackageType,
-      Thumbnail: result.url,
-      PaymentOption: req.body.PaymentOption,
-      PackageStatus: req.body.PackageStatus,
-      OrgType: req.body.OrgType,
-      PackageDescription: req.body.PackageDescription,
-      image: result.url,
-      Quantity: req.body.Quantity,
-      ActualPrice: req.body.ActualPrice,
-      OfferPrice: req.body.OfferPrice,
-      PortalPrice: req.body.PortalPrice,
-      MaxPrice: req.body.MaxPrice,
-    };
+    User.findOne({ _userid: user.userid }, function (err, user) {
+      if (err) return false;
 
-    Organization.updateOne(
-      { OrgName: req.body.OrgName },
-      { $push: { OrgPackages: detail } },
+      (user.firstname = req.body.firstname || user.firstname),
+        (user.lastname = req.body.lastname || user.lastname),
+        (user.gender = req.body.gender || user.gender),
+        (user.phone = req.body.phone || user.phone),
+        (user.email = req.body.email || user.email),
+        (user.Status = req.body.Status || user.Status),
+        (user.OrgName = req.body.OrgName || user.OrgName),
+        (user.usertype = req.body.usertype || user.usertype),
+        (user.password = req.body.password || user.password);
+      user.image = result.url || user.image;
 
-      function (err, result) {
-        if (err) {
-          res.json(err);
-        } else {
-          detail["OrgName"] = req.body.OrgName;
-          res.json({
-            message: "Package added successfully",
-            createdPackage: detail,
-          });
-        }
-      }
-    );
+      user.save().then((user) => {
+        var updateuser = {
+          firstname: user.firstname,
+          lastname: user.lastname,
+          gender: user.gender,
+          phone: user.phone,
+          usertype: user.usertype,
+          OrgName: user.OrgName,
+          email: user.email,
+          Status: user.Status,
+          image: user.image,
+        };
+
+        res.json(updateuser);
+      });
+    });
   });
 });
+
+module.exports = router;

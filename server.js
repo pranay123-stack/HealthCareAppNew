@@ -22,6 +22,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(require("./router/auth"));
+app.use(require("./router/profile"));
 app.use(require("./router/org"));
 app.use(require("./router/package"));
 app.use(require("./router/lead"));
