@@ -135,4 +135,31 @@ router.get("/getcreatedleadsoforgname/:OrgName", async (req, res) => {
   next();
 });
 
+router.post("/assignedOrgs", (req, res) => {
+  // if (req.user.usertype === "superAdmin") {
+
+  // }
+
+  Lead.updateOne(
+    { _leadid: req.body._leadid },
+    { $push: { AssignedOrgs: req.body } },
+
+    function (err, result) {
+      if (err) {
+        res.json(err);
+      } else {
+        res.json({
+          message: "Organization assigned successfully",
+        });
+      }
+    }
+  );
+});
+
+router.get("/assignedLeads", (req, res) => {
+  Lead.find({ "AssignedOrgs.orgids": req.body._orgid }).then((leads) => {
+    res.json(leads);
+  });
+});
+
 module.exports = router;

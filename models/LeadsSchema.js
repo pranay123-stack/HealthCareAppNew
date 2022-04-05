@@ -11,6 +11,17 @@ const LeadSchema = new mongoose.Schema(
       required: true,
     },
 
+    AssignedOrgs: [
+      {
+        orgids: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Organization",
+          },
+        ],
+      },
+    ],
+
     PatientAge: {
       type: Number,
       required: true,
